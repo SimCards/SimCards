@@ -1,4 +1,4 @@
-package io.github.simcards.simcards.client.util;
+package io.github.simcards.simcards.client.graphics;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,17 +9,15 @@ import android.opengl.GLUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
-import io.github.simcards.simcards.R;
-
 /**
  * Utility methods and constants for graphics.
  */
 public class GraphicsUtil {
 
     /** The resources for the app. */
-    public static Resources resources;
+    public static Resources sResources;
     /** The default shader program with no special effects. */
-    public static int shaderProgram;
+    public static int sShaderProgram;
 
     /**
      * Compiles a shader from shader code.
@@ -31,7 +29,7 @@ public class GraphicsUtil {
     public static int loadShader(int type, int resource) {
         String shaderCode = "";
         try {
-            InputStream input = resources.openRawResource(resource);
+            InputStream input = sResources.openRawResource(resource);
             byte[] buffer = new byte[input.available()];
             input.read(buffer);
             shaderCode = new String(buffer);
@@ -69,7 +67,7 @@ public class GraphicsUtil {
             options.inScaled = false;
 
             // Read in the resource.
-            Bitmap bitmap = BitmapFactory.decodeResource(resources, resourceId, options);
+            Bitmap bitmap = BitmapFactory.decodeResource(sResources, resourceId, options);
 
             // Bind to the texture in OpenGL.
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
@@ -83,9 +81,7 @@ public class GraphicsUtil {
 
             // Recycle the bitmap, since its data has been loaded into OpenGL.
             bitmap.recycle();
-        }
-
-        if (textureHandle[0] == 0) {
+        } else {
             throw new RuntimeException("Error loading texture.");
         }
 

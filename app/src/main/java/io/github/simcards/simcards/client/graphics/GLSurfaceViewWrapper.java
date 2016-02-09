@@ -2,7 +2,6 @@ package io.github.simcards.simcards.client.graphics;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
-import android.view.MotionEvent;
 
 /**
  * Wrapper for GLSurfaceView for touch screen compatibility.
@@ -10,10 +9,10 @@ import android.view.MotionEvent;
 public class GLSurfaceViewWrapper extends GLSurfaceView {
 
     /** The surface view object currently in use. */
-    private static GLSurfaceViewWrapper surfaceView;
+    private static GLSurfaceViewWrapper sSurfaceView;
 
     /** The Renderer used by the surface. */
-    private final GLRenderer renderer;
+    private final GLRenderer mRenderer;
 
     /**
      * Initializes a surface view.
@@ -22,15 +21,15 @@ public class GLSurfaceViewWrapper extends GLSurfaceView {
     public GLSurfaceViewWrapper(Context context) {
         super(context);
 
-        surfaceView = this;
+        sSurfaceView = this;
 
         // Create an OpenGL ES 2.0 context.
         setEGLContextClientVersion(2);
 
-        renderer = new GLRenderer();
+        mRenderer = new GLRenderer();
 
         // Set the Renderer for drawing on the GLSurfaceView.
-        setRenderer(renderer);
+        setRenderer(mRenderer);
 
         // Render the view only when there is a change in the drawing data.
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
@@ -41,15 +40,15 @@ public class GLSurfaceViewWrapper extends GLSurfaceView {
      * @return The surface view currently in use.
      */
     public static GLSurfaceViewWrapper getInstance() {
-        return surfaceView;
+        return sSurfaceView;
     }
 
     /**
      * Marks the view as dirty, requiring a re-render.
      */
     public static void rerender() {
-        if (surfaceView != null) {
-            surfaceView.requestRender();
+        if (sSurfaceView != null) {
+            sSurfaceView.requestRender();
         }
     }
 }
