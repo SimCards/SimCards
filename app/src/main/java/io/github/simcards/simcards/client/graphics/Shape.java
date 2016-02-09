@@ -33,10 +33,11 @@ public class Shape {
     private final float COLOR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     /** Size of the texture coordinate data in elements. */
     private final int COORDS_PER_TEXTURE = 2;
-    /** The index of the texture to use for the shape. */
-    private int mTextureID;
     /** A handle to the shape's texture data. */
     private int mTextureDataHandle = -1;
+
+    /** The index of the texture to use for the shape. */
+    public int textureID;
 
     /**
      * Creates a shape.
@@ -66,7 +67,7 @@ public class Shape {
 
         mTextureBuffer = makeFloatBuffer(textureCoords);
 
-        mTextureID = textureID;
+        this.textureID = textureID;
     }
 
     /**
@@ -74,8 +75,15 @@ public class Shape {
      */
     void initializeTexture() {
         if (mTextureDataHandle == -1) {
-            mTextureDataHandle = GraphicsUtil.loadTexture(mTextureID);
+            mTextureDataHandle = GraphicsUtil.loadTexture(textureID);
         }
+    }
+
+    /**
+     * Refreshes the shape's texture.
+     */
+    public void resetTexture() {
+        mTextureDataHandle = -1;
     }
 
     /**

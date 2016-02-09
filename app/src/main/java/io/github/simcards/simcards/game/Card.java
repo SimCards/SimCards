@@ -14,11 +14,13 @@ public class Card {
     public final Rank rank;
     /** The card's suit. */
     public final Suit suit;
+    /** Whether the card is facing up, showing its type. */
+    private boolean faceUp = true;
 
     /** The width of cards. */
     private static final float CARD_WIDTH = 0.225f;
     /** The height of cards. */
-    private static final float CARD_HEIGHT = 0.363f;
+    public static final float CARD_HEIGHT = 0.363f;
 
     /** The shape used to render the card. */
     private Shape shape;
@@ -40,8 +42,8 @@ public class Card {
         float halfCardHeight = CARD_HEIGHT / 2;
         float top = position.y + halfCardHeight;
         float bottom = position.y - halfCardHeight;
-        float right = position.x + halfCardWidth;
-        float left = position.x - halfCardWidth;
+        float right = -position.x + halfCardWidth;
+        float left = -position.x - halfCardWidth;
         shape = new Shape(new float[]{
                 left, top, 0.0f,
                 left, bottom, 0.0f,
@@ -49,10 +51,10 @@ public class Card {
                 right, top, 0.0f},
                 new short[]{0, 1, 2, 0, 2, 3},
                 new float[]{
-                        0.0f, 1.0f,
-                        0.0f, 0.0f,
                         1.0f, 0.0f,
                         1.0f, 1.0f,
+                        0.0f, 1.0f,
+                        0.0f, 0.0f,
                 },
                 getImageLocation());
         GLRenderer.addShape(shape);
@@ -66,10 +68,25 @@ public class Card {
     }
 
     /**
+     * Sets whether the card is facing up.
+     * @param newFaceUp Whether the card is facing up.
+     */
+    public void setFaceUp(boolean newFaceUp) {
+        faceUp = newFaceUp;
+        if (shape != null) {
+            shape.textureID = getImageLocation();
+            shape.resetTexture();
+        }
+    }
+
+    /**
      * Gets the index of the image representing the card's type.
      * @return The index of the image representing the card's type.
      */
     private int getImageLocation() {
+        if (!faceUp) {
+            return R.drawable.face_down;
+        }
         switch(suit) {
             case BLACKJOKER:
                 return R.drawable.black_joker;
