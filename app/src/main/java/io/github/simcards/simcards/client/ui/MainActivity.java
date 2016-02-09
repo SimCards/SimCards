@@ -1,9 +1,11 @@
 package io.github.simcards.simcards.client.ui;
 
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -31,13 +33,10 @@ public class MainActivity extends AppCompatActivity {
     /** Surface for rendering objects. */
     private GLSurfaceView mGLView;
 
-    /** Listens for pan gestures. */
-    private GestureDetectorCompat mPanDetector;
+    /** Listens for touch gestures. */
+    private GestureDetectorCompat mTouchDetector;
     /** Listens for zoom gestures. */
     private ScaleGestureDetector mZoomDetector;
-
-    /** The field on which the card game is played. */
-    private Environment mEnvironment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,41 +46,48 @@ public class MainActivity extends AppCompatActivity {
 
         GraphicsUtil.sResources = this.getResources();
 
+        // Get the Android screen size.
+        Display display = getWindowManager().getDefaultDisplay();
+        Point screenSize = new Point();
+        display.getSize(screenSize);
+        GraphicsUtil.screenWidth = screenSize.x;
+        GraphicsUtil.screenHeight = screenSize.y;
+
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         mGLView = new GLSurfaceViewWrapper(this);
         setContentView(mGLView);
 
-        mPanDetector = new GestureDetectorCompat(this, new PanListener());
+        mTouchDetector = new GestureDetectorCompat(this, new TouchListener());
         mZoomDetector = new ScaleGestureDetector(this, new ZoomListener());
 
-        mEnvironment = new Environment();
+        Environment environment = Environment.getEnvironment();
 
         List<Card> cards = new ArrayList<>();
         cards.add(new Card(Rank.ACE, Suit.SPADE));
         Deck deck = new Deck(cards, new GridPosition(), Visibility.FACE_DOWN);
-        mEnvironment.addNewDeck(deck);
+        environment.addNewDeck(deck);
 
         List<Card> cards2 = new ArrayList<>();
         cards2.add(new Card(Rank.ACE, Suit.HEART));
         Deck deck2 = new Deck(cards2, new GridPosition(1, 0), Visibility.FACE_UP);
-        mEnvironment.addNewDeck(deck2);
+        environment.addNewDeck(deck2);
 
         List<Card> cards3 = new ArrayList<>();
         cards3.add(new Card(Rank.ACE, Suit.CLUB));
         Deck deck3 = new Deck(cards3, new GridPosition(-1, 0), Visibility.FACE_UP);
-        mEnvironment.addNewDeck(deck3);
+        environment.addNewDeck(deck3);
 
         List<Card> cards4 = new ArrayList<>();
         cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
         Deck deck4 = new Deck(cards4, new GridPosition(0, 1), Visibility.FACE_UP);
-        mEnvironment.addNewDeck(deck4);
+        environment.addNewDeck(deck4);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mZoomDetector.onTouchEvent(event);
-        mPanDetector.onTouchEvent(event);
+        mTouchDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 

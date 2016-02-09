@@ -1,8 +1,14 @@
 package io.github.simcards.simcards.game;
 
+import android.opengl.Matrix;
+import android.view.MotionEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.simcards.simcards.client.graphics.GLRenderer;
+import io.github.simcards.simcards.client.graphics.GraphicsUtil;
+import io.github.simcards.simcards.util.BoundingBox;
 import io.github.simcards.simcards.util.GridPosition;
 import io.github.simcards.simcards.util.Position;
 import io.github.simcards.simcards.util.RandomUtil;
@@ -140,5 +146,39 @@ public class Deck {
             shuffled.add(RandomUtil.removeRandomElementInList(cards));
         }
         cards = shuffled;
+    }
+
+    /**
+     * Does an action upon the deck being touched.
+     * @param event The motion event to process the touch with.
+     */
+    public void touch(MotionEvent event) {
+        // Convert the touch position to world coordinates.
+        Position touchPosition = new Position(event.getX(), event.getY());
+        float halfScreenHeight = GraphicsUtil.screenHeight / 2;
+        touchPosition.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
+        touchPosition.invertY();
+        touchPosition.scale(GLRenderer.sCamera.scale / halfScreenHeight);
+        touchPosition.addPosition(GLRenderer.sCamera.position);
+        if (getBoundingBox().isInside(touchPosition)) {
+            // Process the deck touch.
+            Card topCard = getTopCard();
+            if (topCard != null) {
+                System.out.println(topCard.rank.ordinal());
+                System.out.println(topCard.suit.ordinal());
+            }
+        }
+    }
+
+    /**
+     * Gets the bounding box around the deck.
+     * @return The bounding box around the deck.
+     */
+    private BoundingBox getBoundingBox() {
+        Position deckPosition = gridPosition.getWorldPosition();
+        float xOffset = Card.getScaledCenterOffsetX();
+        float yOffset = Card.getScaledCenterOffsetY();
+        return new BoundingBox(deckPosition.x - xOffset, deckPosition.x + xOffset,
+                deckPosition.y - yOffset, deckPosition.y + yOffset);
     }
 }

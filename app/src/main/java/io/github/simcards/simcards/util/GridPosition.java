@@ -35,4 +35,14 @@ public class GridPosition {
     public Position getWorldPosition() {
         return new Position(x * Card.CARD_HEIGHT, y * Card.CARD_HEIGHT);
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof GridPosition) {
+            GridPosition otherPosition = (GridPosition)other;
+            return otherPosition.x == x && otherPosition.y == y;
+        } else {
+            return false;
+        }
+    }
 }

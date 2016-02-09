@@ -3,6 +3,7 @@ package io.github.simcards.simcards.client.graphics;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.opengl.GLES20;
 import android.opengl.GLUtils;
 
@@ -18,6 +19,11 @@ public class GraphicsUtil {
     public static Resources sResources;
     /** The default shader program with no special effects. */
     public static int sShaderProgram;
+
+    /** The width of the Android screen. */
+    public static int screenWidth;
+    /** The height of the Android screen. */
+    public static int screenHeight;
 
     /**
      * Compiles a shader from shader code.

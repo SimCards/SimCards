@@ -41,11 +41,12 @@ public class Camera {
 
     /**
      * Adds an offset to the camera position.
-     * @param offset The offset to add to the camera position.
+     * @param offsetX The offset to add to the camera position's x coordinate.
+     * @param offsetY The offset to add to the camera position's y coordinate.
      */
-    public void offsetPosition(Position offset) {
-        position.addXLimited(offset.x, minX, maxX);
-        position.addYLimited(offset.y, minY, maxY);
+    public void offsetPosition(float offsetX, float offsetY) {
+        position.addXLimited(offsetX, minX, maxX);
+        position.addYLimited(offsetY, minY, maxY);
     }
 
     /**

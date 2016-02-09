@@ -14,13 +14,21 @@ public class Position {
     }
 
     /**
-     * Initializes a vector with initial coordinates.
-     * @param x The x coordinate of the vector.
-     * @param y The y coordinate of the vector.
+     * Initializes a position with initial coordinates.
+     * @param x The x coordinate of the position.
+     * @param y The y coordinate of the position.
      */
     public Position(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Initializes a position from a 4x4 matrix.
+     * @param matrix The matrix to initialize the position with.
+     */
+    public Position(float[] matrix) {
+        this(matrix[0], matrix[5]);
     }
 
     /**
@@ -46,6 +54,16 @@ public class Position {
     public void addPosition(Position offset) {
         addX(offset.x);
         addY(offset.y);
+    }
+
+    /**
+     * Adds a position offset to the current position.
+     * @param offsetX The value to add to the x coordinate.
+     * @param offsetY The value to add to the y coordinate.
+     */
+    public void addPosition(float offsetX, float offsetY) {
+        addX(offsetX);
+        addY(offsetY);
     }
 
     /**
@@ -75,6 +93,34 @@ public class Position {
     public void scale(float scaleValue) {
         x *= scaleValue;
         y *= scaleValue;
+    }
+
+    /**
+     * Inverts the y coordinate.
+     */
+    public void invertY() {
+        y = -y;
+    }
+
+    /**
+     * Returns a 4x4 matrix representing the position.
+     * @return A 4x4 matrix representing the position.
+     */
+    public float[] convertToMatrix() {
+        return new float[]{x, 0, 0, 0,
+                           0, y, 0, 0,
+                           0, 0, 0, 0,
+                           0, 0, 0, 0};
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Position) {
+            Position otherPosition = (Position)other;
+            return otherPosition.x == x && otherPosition.y == y;
+        } else {
+            return false;
+        }
     }
 
     @Override

@@ -45,4 +45,15 @@ public class MathUtil {
         Matrix.scaleM(scaledMatrix, 0, scale, scale, scale);
         return scaledMatrix;
     }
+
+    /**
+     * Checks if a value is between range of values.
+     * @param value The value to check for being within a range.
+     * @param min The minimum value that the given value can be.
+     * @param max The maximum value that the given value can be.
+     * @return Whether the given value is within the given range.
+     */
+    public static boolean isBetween(float value, float min, float max) {
+        return value >= min && value <= max;
+    }
 }

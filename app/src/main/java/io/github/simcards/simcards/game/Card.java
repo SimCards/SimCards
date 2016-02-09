@@ -18,7 +18,7 @@ public class Card {
     private boolean faceUp = true;
 
     /** The width of cards. */
-    private static final float CARD_WIDTH = 0.225f;
+    static final float CARD_WIDTH = 0.225f;
     /** The height of cards. */
     public static final float CARD_HEIGHT = 0.363f;
 
@@ -158,5 +158,21 @@ public class Card {
                 }
         }
         return -1;
+    }
+
+    /**
+     * Gets the screen distance from a card's center to its side.
+     * @return The screen distance from a card's center to its side.
+     */
+    public static float getScaledCenterOffsetX() {
+        return Card.CARD_WIDTH / 2 * GLRenderer.sCamera.scale;
+    }
+
+    /**
+     * Gets the screen distance from a card's center to its top or bottom.
+     * @return The screen distance from a card's center to its top or bottom.
+     */
+    public static float getScaledCenterOffsetY() {
+        return Card.CARD_HEIGHT / 2 * GLRenderer.sCamera.scale;
     }
 }

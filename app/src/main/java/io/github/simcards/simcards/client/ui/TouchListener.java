@@ -6,12 +6,14 @@ import android.view.MotionEvent;
 import io.github.simcards.simcards.client.graphics.Camera;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
+import io.github.simcards.simcards.game.Deck;
+import io.github.simcards.simcards.game.Environment;
 import io.github.simcards.simcards.util.Position;
 
 /**
- * Listens for panning gestures.
+ * Listens for touch gestures.
  */
-public class PanListener extends GestureDetector.SimpleOnGestureListener {
+public class TouchListener extends GestureDetector.SimpleOnGestureListener {
 
     /** Multiplier for controlling the speed at which the screen is panned. */
     private static final float PAN_SPEED = 0.0026f;
@@ -22,13 +24,21 @@ public class PanListener extends GestureDetector.SimpleOnGestureListener {
     }
 
     @Override
+    public boolean onSingleTapUp(MotionEvent event) {
+        Environment environment = Environment.getEnvironment();
+        for (Deck deck : environment.decks) {
+            deck.touch(event);
+        }
+        return false;
+    }
+
+    @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         Camera camera = GLRenderer.sCamera;
-        float speed = -PAN_SPEED;
-        float offsetX = distanceX * speed;
-        float offsetY = distanceY * speed;
-        camera.offsetPosition(new Position(offsetX, offsetY));
+        float offsetX = distanceX * PAN_SPEED;
+        float offsetY = -distanceY * PAN_SPEED;
+        camera.offsetPosition(offsetX, offsetY);
         GLSurfaceViewWrapper.rerender();
-        return true;
+        return false;
     }
 }

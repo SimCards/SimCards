@@ -23,7 +23,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     private static final List<Shape> shapes = new ArrayList<>();
 
     /** The model view projection matrix. */
-    private float[] mMVPMatrix = new float[16];
+    public static float[] mMVPMatrix = new float[16];
     /** The projection matrix. */
     private float[] mProjectionMatrix = new float[16];
     /** The unscaled projection matrix. */
@@ -63,8 +63,8 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         // Set the camera position (view matrix).
         Position cameraPosition = sCamera.position;
 
-        Matrix.setLookAtM(mViewMatrix, 0, cameraPosition.x, cameraPosition.y, -3,
-                cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, -cameraPosition.x, cameraPosition.y, -3,
+                -cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation.
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
