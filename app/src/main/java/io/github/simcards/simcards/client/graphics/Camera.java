@@ -1,57 +1,72 @@
 package io.github.simcards.simcards.client.graphics;
 
-import io.github.simcards.simcards.client.util.Vector3;
+import io.github.simcards.simcards.util.MathUtil;
+import io.github.simcards.simcards.util.Position;
 
 /**
  * Controls what the user sees on the playing field.
  */
 public class Camera {
 
+    /** The minimum value of the camera position's x coordinate. */
+    public float minX = -1;
+    /** The maximum value of the camera position's x coordinate. */
+    public float maxX = 1;
+    /** The minimum value of the camera position's y coordinate. */
+    public float minY = -1;
+    /** The maximum value of the camera position's y coordinate. */
+    public float maxY = 1;
+
     /** The initial z coordinate of the camera's position when initialized. */
-    public static final float INITIAL_Z = -3;
-    /** The limit to how close the camera can get to the playing field. */
-    private static final float MAX_Z = -1;
+    public static final float INITIAL_SCALE = 1f;
+    /** The minimum scale of the camera */
+    private static final float MIN_SCALE = 0.5f;
+    /** The maximum scale of the camera. */
+    public float maxScale = 10;
+
+    /** The scale of the camera view. */
+    public float scale = INITIAL_SCALE;
+    /** The scale of the camera view on the previous frame. */
+    public float prevScale = -1;
 
     /** The position of the camera in space. */
-    private Vector3 position;
+    public Position position;
 
     /**
-     * Sets up a camera at a default distance away from the playing field.
+     * Sets up a camera at a default position.
      */
     public Camera() {
-        position = new Vector3(0, 0, INITIAL_Z);
+        position = new Position();
     }
 
     /**
-     * Returns the position of the camera.
-     * @return The position of the camera.
+     * Adds an offset to the camera position.
+     * @param offset The offset to add to the camera position.
      */
-    public Vector3 getPosition() {
-        return position;
+    public void offsetPosition(Position offset) {
+        position.addXLimited(offset.x, minX, maxX);
+        position.addYLimited(offset.y, minY, maxY);
     }
 
     /**
-     * Returns the z coordinate of the position of the camera.
-     * @return The z coordinate of the position of the camera.
+     * Adds a value to the camera scale, limited to a range of values.
+     * @param offset The amount to add to the camera scale.
      */
-    public float getZ() { return position.z; };
-
-    /**
-     * Adds x and y values to the camera position.
-     * @param offsetX The amount to add to the camera position's x coordinate.
-     * @param offsetY The amount to add to the camera position's y coordinate.
-     */
-    public void offsetPosition(float offsetX, float offsetY) {
-        position.addX(offsetX);
-        position.addY(offsetY);
+    public void offsetScale(float offset) {
+        scale = MathUtil.addLimited(scale, offset, MIN_SCALE, maxScale);
     }
 
     /**
-     * Adds a z value to the camera position, capped at a certain limit of closeness.
-     * @param offsetZ The amount to add the the camera position's z coordinate.
+     * Checks if the camera's scale has changed between the previous and the current frames.
+     * Updates the previous scale variable after checking.
+     * @return Whether the camera's scale has changed between the previous and the current frames.
      */
-    public void offsetZ(float offsetZ) {
-        position.addZ(offsetZ);
-        position.z = Math.min(position.z, MAX_Z);
+    public boolean checkScaleChange() {
+        boolean changed = false;
+        if (prevScale != scale) {
+            changed = true;
+        }
+        prevScale = scale;
+        return changed;
     }
 }

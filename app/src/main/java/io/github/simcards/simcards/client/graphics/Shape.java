@@ -7,66 +7,75 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import io.github.simcards.simcards.client.util.GraphicsUtil;
-
 /**
  * A polygon to be rendered on the screen.
  */
 public class Shape {
 
     /** Buffer of vertices in the shape. */
-    protected FloatBuffer vertexBuffer;
+    private FloatBuffer mVertexBuffer;
     /** Buffer of triangle indices in the shape. */
-    protected ShortBuffer drawListBuffer;
+    private ShortBuffer mDrawListBuffer;
     /** Store our model data in a float buffer. */
-    protected FloatBuffer textureBuffer;
+    private FloatBuffer mTextureBuffer;
     /** The number of coordinates per vertex. */
-    protected final int COORDS_PER_VERTEX = 3;
+    private final int COORDS_PER_VERTEX = 3;
     /** The coordinates of the vertices in the shape. */
-    protected float[] shapeCoords;
+    private float[] mShapeCoords;
     /** The triangle indices for the shape. */
-    protected short[] drawOrder;
+    private short[] mDrawOrder;
     /** The number of vertices in the shape. */
-    protected int vertexCount;
+    private int mVertexCount;
     /** The number of bytes per vertex. */
-    protected int vertexStride;
+    private int mVertexStride;
 
     /** The color of the shape. */
-    protected final float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    private final float COLOR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     /** Size of the texture coordinate data in elements. */
-    protected final int COORDS_PER_TEXTURE = 2;
+    private final int COORDS_PER_TEXTURE = 2;
+    /** The index of the texture to use for the shape. */
+    private int mTextureID;
     /** A handle to the shape's texture data. */
-    protected int textureDataHandle;
+    private int mTextureDataHandle = -1;
 
     /**
      * Creates a shape.
      * @param coords The coordinates of the vertices in the shape.
      * @param vertices The triangle indices for the shape.
      * @param textureCoords The texture coordinates for the shape's texture.
-     * @param textureID The texture to use for the shape.
+     * @param textureID The index of the texture to use for the shape.
      */
     public Shape(float[] coords, short[] vertices, float[] textureCoords, int textureID) {
-        drawOrder = vertices;
-        shapeCoords = coords;
-        vertexCount = shapeCoords.length / COORDS_PER_VERTEX;
+        mDrawOrder = vertices;
+        mShapeCoords = coords;
+        mVertexCount = mShapeCoords.length / COORDS_PER_VERTEX;
         // 4 bytes per vertex.
-        vertexStride = COORDS_PER_VERTEX * 4;
+        mVertexStride = COORDS_PER_VERTEX * 4;
 
         // Initialize vertex byte buffer for shape coordinates.
         // (# of coordinate values * 4 bytes per float)
-        vertexBuffer = makeFloatBuffer(shapeCoords);
+        mVertexBuffer = makeFloatBuffer(mShapeCoords);
 
         // Initialize byte buffer for the draw list.
         // (# of coordinate values * 2 bytes per short)
-        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2);
+        ByteBuffer dlb = ByteBuffer.allocateDirect(mDrawOrder.length * 2);
         dlb.order(ByteOrder.nativeOrder());
-        drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(drawOrder);
-        drawListBuffer.position(0);
+        mDrawListBuffer = dlb.asShortBuffer();
+        mDrawListBuffer.put(mDrawOrder);
+        mDrawListBuffer.position(0);
 
-        textureBuffer = makeFloatBuffer(textureCoords);
+        mTextureBuffer = makeFloatBuffer(textureCoords);
 
-        textureDataHandle = GraphicsUtil.loadTexture(textureID);
+        mTextureID = textureID;
+    }
+
+    /**
+     * Initializes the shape's texture if it is not initialized;
+     */
+    void initializeTexture() {
+        if (mTextureDataHandle == -1) {
+            mTextureDataHandle = GraphicsUtil.loadTexture(mTextureID);
+        }
     }
 
     /**
@@ -86,8 +95,8 @@ public class Shape {
      * Draws the shape on the screen.
      * @param mvpMatrix The transformation matrix to move the shape with.
      */
-    public void draw(float[] mvpMatrix) {
-        int shaderProgram = GraphicsUtil.shaderProgram;
+    void draw(float[] mvpMatrix) {
+        int shaderProgram = GraphicsUtil.sShaderProgram;
         // Add program to OpenGL ES environment.
         GLES20.glUseProgram(shaderProgram);
 
@@ -99,7 +108,7 @@ public class Shape {
 
         // Prepare the shape coordinate data.
         GLES20.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+                GLES20.GL_FLOAT, false, mVertexStride, mVertexBuffer);
 
         // Get handle to fragment shader's vColor member.
         int colorHandle = GLES20.glGetUniformLocation(shaderProgram, "vColor");
@@ -108,21 +117,21 @@ public class Shape {
         int textureCoordinateHandle = GLES20.glGetAttribLocation(shaderProgram, "aTexCoordinate");
 
         // Set color for drawing the shape.
-        GLES20.glUniform4fv(colorHandle, 1, color, 0);
+        GLES20.glUniform4fv(colorHandle, 1, COLOR, 0);
 
         // Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
         // Bind the texture to this unit.
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureDataHandle);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
 
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
         GLES20.glUniform1i(textureUniformHandle, 0);
 
-        textureBuffer.position(0);
-        GLES20.glVertexAttribPointer(textureCoordinateHandle, COORDS_PER_TEXTURE, GLES20.GL_FLOAT, false,
-                0, textureBuffer);
+        mTextureBuffer.position(0);
+        GLES20.glVertexAttribPointer(textureCoordinateHandle, COORDS_PER_TEXTURE, GLES20.GL_FLOAT,
+                false, 0, mTextureBuffer);
 
         GLES20.glEnableVertexAttribArray(textureCoordinateHandle);
 
@@ -133,8 +142,8 @@ public class Shape {
         GLES20.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape.
-        GLES20.glDrawElements(GLES20.GL_TRIANGLES, drawOrder.length, GLES20.GL_UNSIGNED_SHORT,
-                drawListBuffer);
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, mDrawOrder.length, GLES20.GL_UNSIGNED_SHORT,
+                mDrawListBuffer);
 
         // Disable vertex array.
         GLES20.glDisableVertexAttribArray(positionHandle);

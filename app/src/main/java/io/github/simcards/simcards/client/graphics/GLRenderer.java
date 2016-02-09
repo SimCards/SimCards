@@ -4,30 +4,35 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import io.github.simcards.simcards.R;
-import io.github.simcards.simcards.client.util.GraphicsUtil;
-import io.github.simcards.simcards.client.util.Vector3;
+import io.github.simcards.simcards.util.MathUtil;
+import io.github.simcards.simcards.util.Position;
 
 /**
  * Renders shapes on the screen.
  */
 public class GLRenderer implements GLSurfaceView.Renderer {
 
-    /** A card to render on the screen. */
-    private Card card;
+    /** Shapes to draw on the screen. */
+    private static final List<Shape> shapes = new ArrayList<>();
 
-    /** Model view projection matrix. */
-    private float[] mvpMatrix = new float[16];
-    /** Projection matrix. */
-    private float[] projectionMatrix = new float[16];
-    /** Camera view matrix. */
-    private float[] viewMatrix = new float[16];
+    /** The model view projection matrix. */
+    private float[] mMVPMatrix = new float[16];
+    /** The projection matrix. */
+    private float[] mProjectionMatrix = new float[16];
+    /** The unscaled projection matrix. */
+    private float[] mBaseProjectionMatrix = new float[16];
+    /** The camera view matrix. */
+    private float[] mViewMatrix = new float[16];
 
     /** The camera used to look at the playing field. */
-    public static Camera camera = new Camera();
+    public static Camera sCamera = new Camera();
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
@@ -41,30 +46,36 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         GLES20.glAttachShader(shaderProgram, fragmentShader);
         // Creates OpenGL ES program executables.
         GLES20.glLinkProgram(shaderProgram);
-        GraphicsUtil.shaderProgram = shaderProgram;
-
-        card = new Card();
+        GraphicsUtil.sShaderProgram = shaderProgram;
 
         // Set the background frame color.
-        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        GLES20.glClearColor(0.066f, 0.567f, 0.404f, 1.0f);
     }
 
     @Override
     public void onDrawFrame(GL10 unused) {
+        if (sCamera.checkScaleChange()) {
+            mProjectionMatrix = MathUtil.scaleMatrix(mBaseProjectionMatrix, 1.0f / sCamera.scale);
+        }
         // Redraw background color.
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Set the camera position (view matrix).
-        Vector3 cameraPosition = camera.getPosition();
-        System.out.println(cameraPosition.toString());
+        Position cameraPosition = sCamera.position;
 
-        Matrix.setLookAtM(viewMatrix, 0, cameraPosition.x, cameraPosition.y, cameraPosition.z, cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
+        Matrix.setLookAtM(mViewMatrix, 0, cameraPosition.x, cameraPosition.y, -3,
+                cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation.
-        Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        // Draw the shape.
-        card.draw(mvpMatrix);
+        // Draw the shapes.
+        synchronized(shapes) {
+            for (Shape shape : shapes) {
+                shape.initializeTexture();
+                shape.draw(mMVPMatrix);
+            }
+        }
     }
 
     @Override
@@ -74,6 +85,24 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         float ratio = (float) width / height;
 
         // This projection matrix is applied to object coordinates in the onDrawFrame() method.
-        Matrix.frustumM(projectionMatrix, 0, -ratio, ratio, -1, 1, 3, 50);
+        Matrix.orthoM(mBaseProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 50);
+    }
+
+    /**
+     * Adds an shape to the render list.
+     * @param shape The shape to add to the render list.
+     */
+    public static synchronized void addShape(Shape shape) {
+        shapes.add(shape);
+        GLSurfaceViewWrapper.rerender();
+    }
+
+    /**
+     * Removes a shape from the render list.
+     * @param shape The shape to remove from the render list.
+     */
+    public static synchronized void removeShape(Shape shape) {
+        shapes.remove(shape);
+        GLSurfaceViewWrapper.rerender();
     }
 }

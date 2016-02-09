@@ -6,14 +6,15 @@ import android.view.MotionEvent;
 import io.github.simcards.simcards.client.graphics.Camera;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
+import io.github.simcards.simcards.util.Position;
 
 /**
- * Listens for panning and zooming gestures.
+ * Listens for panning gestures.
  */
-public class GestureListener extends GestureDetector.SimpleOnGestureListener {
+public class PanListener extends GestureDetector.SimpleOnGestureListener {
 
     /** Multiplier for controlling the speed at which the screen is panned. */
-    private static final float SPEED_BASE = 0.005f;
+    private static final float PAN_SPEED = 0.0026f;
 
     @Override
     public boolean onDown(MotionEvent event) {
@@ -22,11 +23,11 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Camera camera = GLRenderer.camera;
-        float speed = -SPEED_BASE * camera.getZ() / Camera.INITIAL_Z;
+        Camera camera = GLRenderer.sCamera;
+        float speed = -PAN_SPEED;
         float offsetX = distanceX * speed;
         float offsetY = distanceY * speed;
-        camera.offsetPosition(offsetX, offsetY);
+        camera.offsetPosition(new Position(offsetX, offsetY));
         GLSurfaceViewWrapper.rerender();
         return true;
     }
