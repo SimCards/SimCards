@@ -18,9 +18,9 @@ public class Camera {
     public float maxY = 1;
 
     /** The initial z coordinate of the camera's position when initialized. */
-    public static final float INITIAL_SCALE = 1f;
+    public static final float INITIAL_SCALE = 1.1f;
     /** The minimum scale of the camera */
-    private static final float MIN_SCALE = 0.5f;
+    public static final float MIN_SCALE = 0.5f;
     /** The maximum scale of the camera. */
     public float maxScale = 10;
 
@@ -51,10 +51,10 @@ public class Camera {
 
     /**
      * Adds a value to the camera scale, limited to a range of values.
-     * @param offset The amount to add to the camera scale.
+     * @param newScale The amount to add to the camera scale.
      */
-    public void offsetScale(float offset) {
-        scale = MathUtil.addLimited(scale, offset, MIN_SCALE, maxScale);
+    public void setScale(float newScale) {
+        scale = MathUtil.limitValue(newScale, MIN_SCALE, maxScale);
     }
 
     /**

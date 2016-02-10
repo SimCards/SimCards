@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import io.github.simcards.simcards.client.graphics.Camera;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
+import io.github.simcards.simcards.client.graphics.GraphicsUtil;
 import io.github.simcards.simcards.game.Deck;
 import io.github.simcards.simcards.game.Environment;
 import io.github.simcards.simcards.util.Position;
@@ -35,8 +36,9 @@ public class TouchListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         Camera camera = GLRenderer.sCamera;
-        float offsetX = distanceX * PAN_SPEED;
-        float offsetY = -distanceY * PAN_SPEED;
+        float speed = PAN_SPEED * 800 / GraphicsUtil.screenHeight * GLRenderer.sCamera.scale;
+        float offsetX = distanceX * speed;
+        float offsetY = -distanceY * speed;
         camera.offsetPosition(offsetX, offsetY);
         GLSurfaceViewWrapper.rerender();
         return false;

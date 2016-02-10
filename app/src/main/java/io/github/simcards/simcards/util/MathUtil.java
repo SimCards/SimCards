@@ -35,14 +35,15 @@ public class MathUtil {
     }
 
     /**
-     * Scales a matrix by a value.
+     * Scales a matrix's x and y coordinates by a value.
      * @param matrix The matrix to scale.
      * @param scale The value to scale the matrix by.
      * @return A new matrix that is the original matrix scaled by the value.
      */
     public static float[] scaleMatrix(float[] matrix, float scale) {
         float[] scaledMatrix = Arrays.copyOf(matrix, matrix.length);
-        Matrix.scaleM(scaledMatrix, 0, scale, scale, scale);
+        scaledMatrix[0] *= scale;
+        scaledMatrix[5] *= scale;
         return scaledMatrix;
     }
 
