@@ -27,9 +27,7 @@ public class TouchListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
         Environment environment = Environment.getEnvironment();
-        for (Deck deck : environment.decks) {
-            deck.touch(event);
-        }
+        environment.touch(new Position(event));
         return false;
     }
 

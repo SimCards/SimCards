@@ -3,6 +3,8 @@ package io.github.simcards.simcards.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.simcards.simcards.util.Position;
+
 /**
  * A field on which card games are played.
  */
@@ -36,5 +38,13 @@ public class Environment {
      */
     public void addNewDeck(Deck deck) {
         decks.add(deck);
+    }
+
+    public void touch(Position position) {
+        for (Deck deck : decks) {
+            if (deck.isTouched(position)) {
+                deck.touch();
+            }
+        }
     }
 }

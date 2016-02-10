@@ -1,5 +1,7 @@
 package io.github.simcards.simcards.util;
 
+import android.view.MotionEvent;
+
 /**
  * A position to use for rendering.
  */
@@ -21,6 +23,14 @@ public class Position {
     public Position(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    /**
+     * Initializes a position from a touch event.
+     * @param event The touch event to initialize the position with.
+     */
+    public Position(MotionEvent event) {
+        this(event.getX(), event.getY());
     }
 
     /**
