@@ -66,28 +66,16 @@ public class MainActivity extends AppCompatActivity {
         Environment environment = Environment.getEnvironment();
 
         AbsolutelyRankedWar game = new AbsolutelyRankedWar(Deck.getStandard52Cards());
-
-        System.out.println("advanceState1");
-        game.advanceState(1);
-
-        try { Thread.sleep(1000); } catch (InterruptedException e) {}
-
-        System.out.println("advanceState0");
-        game.advanceState(0);
-
+        environment.registerTouchHandler(game);
+//        System.out.println("advanceState1");
+//        game.advanceState(1);
+//
+//        try { Thread.sleep(1000); } catch (InterruptedException e) {}
+//
+//        System.out.println("advanceState0");
+//        game.advanceState(0);
+//
         // advanced war simulation
-//        int turn = 0;
-//        while (game.getVictor() == -1) {
-//            game.advanceState(turn);
-//            try {
-//                Thread.sleep(500L);
-//            } catch (InterruptedException e) {
-//                Log.e("SimCards", e.toString());
-//            }
-//            turn = (turn + 1) % 1;
-//        }
-//        int victor = game.getVictor();
-//        System.out.println("The victor is: " + victor);
 
     }
 

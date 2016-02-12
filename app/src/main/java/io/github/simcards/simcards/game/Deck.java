@@ -2,8 +2,8 @@ package io.github.simcards.simcards.game;
 
 import android.view.MotionEvent;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import io.github.simcards.simcards.client.graphics.GLRenderer;
 import io.github.simcards.simcards.client.graphics.GraphicsUtil;
@@ -69,6 +69,8 @@ public class Deck {
     private void renderNextCard(Card card) {
         if (visibility == Visibility.FACE_DOWN) {
             card.setFaceUp(false);
+        } else {
+            card.setFaceUp(true);
         }
         Position worldPosition = gridPosition.getWorldPosition();
         card.createShape(worldPosition);
@@ -140,7 +142,7 @@ public class Deck {
      * Shuffles the order of the cards in the deck.
      */
     public void shuffle() {
-        List<Card> shuffled = new ArrayList<>(cards.size());
+        List<Card> shuffled = new Vector<Card>(cards.size());
         while (!cards.isEmpty()) {
             shuffled.add(RandomUtil.removeRandomElementInList(cards));
         }
@@ -155,7 +157,7 @@ public class Deck {
         Rank[] ranks = Rank.values();
         Suit[] suits = Suit.values();
 
-        List<Card> cards = new ArrayList<Card>(52);
+        List<Card> cards = new Vector<Card>(52);
         for (int i = 0; i < 52; i++) {
             Rank r = ranks[i / 4];
             Suit s = suits[i % 4];
@@ -204,6 +206,7 @@ public class Deck {
      * Does an action upon the deck being touched.
      */
     void touch() {
+        System.out.println("Calling deck's touch method");
         // Process the deck touch.
         Card topCard = getTopCard();
         if (topCard != null) {

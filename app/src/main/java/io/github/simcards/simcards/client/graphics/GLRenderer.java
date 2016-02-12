@@ -6,6 +6,7 @@ import android.opengl.Matrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,7 +21,7 @@ import io.github.simcards.simcards.util.Position;
 public class GLRenderer implements GLSurfaceView.Renderer {
 
     /** Shapes to draw on the screen. */
-    private static final List<Shape> shapes = new ArrayList<>();
+    private static final List<Shape> shapes = new Vector<>();
 
     /** The model view projection matrix. */
     public static float[] mMVPMatrix = new float[16];

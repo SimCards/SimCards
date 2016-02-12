@@ -5,13 +5,15 @@ import android.util.Log;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
+import io.github.simcards.simcards.client.ui.TouchHandler;
 import io.github.simcards.simcards.util.GridPosition;
 
 /**
  * Created by Vishal on 2/12/16.
  */
-public class AbsolutelyRankedWar {
+public class AbsolutelyRankedWar implements TouchHandler {
 
     private Deck[] decks;
     private Deck[] piles;
@@ -22,11 +24,19 @@ public class AbsolutelyRankedWar {
         decks = new Deck[2];
         piles = new Deck[2];
 
-        decks[0] = new Deck(cards.subList(0, cards.size()/2), new GridPosition(0,-2), Visibility.FACE_DOWN);
-        piles[0] = new Deck(new ArrayList<Card>(), new GridPosition(0,-1), Visibility.FACE_UP);
+        List<Card> deck1 = new Vector<>(26);
+        List<Card> deck2 = new Vector<>(26);
 
-        decks[1] = new Deck(cards.subList(cards.size()/2, cards.size()), new GridPosition(0, 2), Visibility.FACE_DOWN);
-        piles[1] = new Deck(new ArrayList<Card>(), new GridPosition(0, 1), Visibility.FACE_UP);
+        for (int i = 0; i < 26; i++) {
+            deck1.add(cards.get(i));
+            deck2.add(cards.get(i+26));
+        }
+
+        decks[0] = new Deck(deck1, new GridPosition(0,-2), Visibility.FACE_DOWN);
+        piles[0] = new Deck(new Vector<Card>(), new GridPosition(0,-1), Visibility.TOP_FACE_UP);
+
+        decks[1] = new Deck(deck2, new GridPosition(0, 2), Visibility.FACE_DOWN);
+        piles[1] = new Deck(new Vector<Card>(), new GridPosition(0, 1), Visibility.TOP_FACE_UP);
 
         Environment.getEnvironment().addNewDeck(decks[0]);
         Environment.getEnvironment().addNewDeck(decks[1]);
@@ -38,7 +48,7 @@ public class AbsolutelyRankedWar {
         int possibleVictor = -1;
 
         for (int i = 0; i < decks.length; i++) {
-            if (decks[i].size() != 0 && piles[i].size() != 0) {
+            if (decks[i].size() != 0 || piles[i].size() != 0) {
                 if (possibleVictor == -1) {
                     possibleVictor = i;
                 } else {
@@ -56,13 +66,18 @@ public class AbsolutelyRankedWar {
      * @return true if the game is still going, false if the game has reached a terminating condition
      */
     public boolean advanceState(int player_id) {
-        if (getVictor() == -1) {
+        if (getVictor() != -1) {
+            System.out.println("Game already finished");
             return false;
         }
 
         // flip over the card of this player
         if (piles[player_id].size() == 0) {
+            System.out.println("flipping card for player " + player_id);
             Card top = decks[player_id].pop();
+            if (top == null) {
+                return false;
+            }
             piles[player_id].addElement(top);
         } else {
             // player has already played
@@ -73,6 +88,7 @@ public class AbsolutelyRankedWar {
         // check to see if all players have played and we can advance to the next round
         for (int i = 0; i < piles.length; i++) {
             if (piles[i].size() == 0) {
+                System.out.println("All players have not played yet.");
                 return false;
             }
         }
@@ -106,5 +122,15 @@ public class AbsolutelyRankedWar {
         int v1 = c1.rank.ordinal() * 4 + c1.suit.ordinal();
         int v2 = c2.rank.ordinal() * 4 + c2.suit.ordinal();
         return v1 - v2;
+    }
+
+    public void handleTouch(Deck deck) {
+        System.out.println("Handling touch!");
+        for (int i = 0; i < decks.length; i++) {
+            if (deck == decks[i]) {
+                advanceState(i);
+                break;
+            }
+        }
     }
 }

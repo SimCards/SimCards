@@ -1,8 +1,11 @@
 package io.github.simcards.simcards.game;
 
+import android.text.method.Touch;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.simcards.simcards.client.ui.TouchHandler;
 import io.github.simcards.simcards.util.Position;
 
 /**
@@ -15,6 +18,8 @@ public class Environment {
 
     /** The current instance of an environment. */
     private static Environment sEnvironment;
+
+    private static TouchHandler touchHandler;
 
     /**
      * Gets the current environment instance.
@@ -40,9 +45,15 @@ public class Environment {
         decks.add(deck);
     }
 
+    public void registerTouchHandler(TouchHandler handler) {
+        touchHandler = handler;
+    }
+
     public void touch(Position position) {
         for (Deck deck : decks) {
             if (deck.isTouched(position)) {
+                if (touchHandler != null)
+                    touchHandler.handleTouch(deck);
                 deck.touch();
             }
         }
