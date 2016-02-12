@@ -5,6 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import java.util.List;
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
 import io.github.simcards.simcards.client.graphics.GraphicsUtil;
+import io.github.simcards.simcards.game.AbsolutelyRankedWar;
 import io.github.simcards.simcards.game.Card;
 import io.github.simcards.simcards.game.Deck;
 import io.github.simcards.simcards.game.Environment;
@@ -63,25 +65,30 @@ public class MainActivity extends AppCompatActivity {
 
         Environment environment = Environment.getEnvironment();
 
-        List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Rank.ACE, Suit.SPADE));
-        Deck deck = new Deck(cards, new GridPosition(), Visibility.FACE_DOWN);
-        environment.addNewDeck(deck);
+        AbsolutelyRankedWar game = new AbsolutelyRankedWar(Deck.getStandard52Cards());
 
-        List<Card> cards2 = new ArrayList<>();
-        cards2.add(new Card(Rank.ACE, Suit.HEART));
-        Deck deck2 = new Deck(cards2, new GridPosition(1, 0), Visibility.FACE_UP);
-        environment.addNewDeck(deck2);
+        System.out.println("advanceState1");
+        game.advanceState(1);
 
-        List<Card> cards3 = new ArrayList<>();
-        cards3.add(new Card(Rank.ACE, Suit.CLUB));
-        Deck deck3 = new Deck(cards3, new GridPosition(-1, 0), Visibility.FACE_UP);
-        environment.addNewDeck(deck3);
+        try { Thread.sleep(1000); } catch (InterruptedException e) {}
 
-        List<Card> cards4 = new ArrayList<>();
-        cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
-        Deck deck4 = new Deck(cards4, new GridPosition(0, 1), Visibility.FACE_UP);
-        environment.addNewDeck(deck4);
+        System.out.println("advanceState0");
+        game.advanceState(0);
+
+        // advanced war simulation
+//        int turn = 0;
+//        while (game.getVictor() == -1) {
+//            game.advanceState(turn);
+//            try {
+//                Thread.sleep(500L);
+//            } catch (InterruptedException e) {
+//                Log.e("SimCards", e.toString());
+//            }
+//            turn = (turn + 1) % 1;
+//        }
+//        int victor = game.getVictor();
+//        System.out.println("The victor is: " + victor);
+
     }
 
     @Override

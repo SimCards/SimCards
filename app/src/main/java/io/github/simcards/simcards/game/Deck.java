@@ -148,6 +148,32 @@ public class Deck {
     }
 
     /**
+     * returns a list of the standard 52 cards in order
+     * @return a list of the standard 52 cards in order
+     */
+    public static List<Card> getStandard52Cards() {
+        Rank[] ranks = Rank.values();
+        Suit[] suits = Suit.values();
+
+        List<Card> cards = new ArrayList<Card>(52);
+        for (int i = 0; i < 52; i++) {
+            Rank r = ranks[i / 4];
+            Suit s = suits[i % 4];
+            cards.add(new Card(r, s));
+        }
+
+        return cards;
+    }
+
+    /**
+     * returns the number of cards in the deck
+     * @return the number of  cards in the deck
+     */
+    public int size() {
+        return cards.size();
+    }
+
+    /**
      * Checks whether the deck is being touched.
      * @param touchPosition The position where the screen was touched.
      * @return Whether the deck is being touched.

@@ -4,10 +4,10 @@ package io.github.simcards.simcards.game;
  * Represents a card suit.
  */
 public enum Suit {
-    SPADE,
-    HEART,
     CLUB,
     DIAMOND,
+    HEART,
+    SPADE,
     BLACKJOKER,
     REDJOKER;
 
