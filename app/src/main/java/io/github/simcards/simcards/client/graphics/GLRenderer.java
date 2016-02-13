@@ -6,7 +6,6 @@ import android.opengl.Matrix;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,7 +20,7 @@ import io.github.simcards.simcards.util.Position;
 public class GLRenderer implements GLSurfaceView.Renderer {
 
     /** Shapes to draw on the screen. */
-    private static final List<Shape> shapes = new Vector<>();
+    private static final List<Shape> shapes = new ArrayList<>();
 
     /** The model view projection matrix. */
     public static float[] mMVPMatrix = new float[16];
@@ -93,8 +92,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
      * Adds an shape to the render list.
      * @param shape The shape to add to the render list.
      */
-    public static synchronized void addShape(Shape shape) {
-        shapes.add(shape);
+    public static void addShape(Shape shape) {
+        synchronized(shapes) {
+            shapes.add(shape);
+        }
         GLSurfaceViewWrapper.rerender();
     }
 
@@ -102,8 +103,10 @@ public class GLRenderer implements GLSurfaceView.Renderer {
      * Removes a shape from the render list.
      * @param shape The shape to remove from the render list.
      */
-    public static synchronized void removeShape(Shape shape) {
-        shapes.remove(shape);
+    public static void removeShape(Shape shape) {
+        synchronized(shapes) {
+            shapes.remove(shape);
+        }
         GLSurfaceViewWrapper.rerender();
     }
 }

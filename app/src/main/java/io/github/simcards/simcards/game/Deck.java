@@ -183,11 +183,13 @@ public class Deck {
     boolean isTouched(Position touchPosition) {
         // Convert the touch position to world coordinates.
         float halfScreenHeight = GraphicsUtil.screenHeight / 2;
-        touchPosition.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
-        touchPosition.invertY();
-        touchPosition.scale(GLRenderer.sCamera.scale / halfScreenHeight);
-        touchPosition.addPosition(GLRenderer.sCamera.position);
-        return getBoundingBox().isInside(touchPosition);
+        Position position = touchPosition.clone();
+        position.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
+        position.invertY();
+        position.scale(GLRenderer.sCamera.scale / halfScreenHeight);
+        position.addPosition(GLRenderer.sCamera.position);
+        BoundingBox boundingBox = getBoundingBox();
+        return boundingBox.isInside(position);
     }
 
     /**

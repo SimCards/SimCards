@@ -123,6 +123,14 @@ public class Position {
                            0, 0, 0, 0};
     }
 
+    /**
+     * Clones the position.
+     * @return A clone of the position.
+     */
+    public Position clone() {
+        return new Position(x, y);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof Position) {
