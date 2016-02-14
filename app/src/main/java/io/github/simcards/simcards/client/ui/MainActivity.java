@@ -1,10 +1,13 @@
 package io.github.simcards.simcards.client.ui;
 
+import android.content.Context;
 import android.graphics.Point;
+import android.net.wifi.WifiManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -12,12 +15,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import org.zeromq.ZMQ;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
 import io.github.simcards.simcards.client.graphics.GraphicsUtil;
+import io.github.simcards.simcards.client.network.SocketThread;
 import io.github.simcards.simcards.game.AbsolutelyRankedWar;
 import io.github.simcards.simcards.game.Card;
 import io.github.simcards.simcards.game.Deck;
@@ -40,9 +46,18 @@ public class MainActivity extends AppCompatActivity {
     /** Listens for zoom gestures. */
     private ScaleGestureDetector mZoomDetector;
 
+    private static Context ctx;
+
+    public static Context getContext() {
+        if (ctx == null) throw new IllegalStateException();
+        return ctx;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ctx = this;
 
         System.out.println("Application started.");
 
@@ -65,8 +80,18 @@ public class MainActivity extends AppCompatActivity {
 
         Environment environment = Environment.getEnvironment();
 
-        AbsolutelyRankedWar game = new AbsolutelyRankedWar(Deck.getStandard52Cards());
+        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+        System.out.println("Using ip address " + ip);
+
+        ZMQ.Context ctx = ZMQ.context(1);
+        ZMQ.Socket socket = ctx.socket(ZMQ.PAIR);
+
+        AbsolutelyRankedWar game = new AbsolutelyRankedWar(socket);
         environment.registerTouchHandler(game);
+
+        new Thread(new SocketThread(socket, game)).start();
+
 //        System.out.println("advanceState1");
 //        game.advanceState(1);
 //

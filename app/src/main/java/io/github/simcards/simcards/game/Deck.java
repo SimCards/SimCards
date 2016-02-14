@@ -62,6 +62,17 @@ public class Deck {
         return success;
     }
 
+    public void addToBottom(Card card) {
+        cards.add(0, card);
+        renderNextCard(card);
+        if (visibility == Visibility.TOP_FACE_UP) {
+            Card prevTopCard = getOffsetTopCard(1);
+            if (prevTopCard != null) {
+                prevTopCard.setFaceUp(false);
+            }
+        }
+    }
+
     /**
      * Draws a card on the screen at the appropriate place on the top of the deck.
      * @param card The card to draw.
@@ -208,7 +219,6 @@ public class Deck {
      * Does an action upon the deck being touched.
      */
     void touch() {
-        System.out.println("Calling deck's touch method");
         // Process the deck touch.
         Card topCard = getTopCard();
         if (topCard != null) {
