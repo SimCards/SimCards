@@ -150,6 +150,10 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
         System.out.println("Handling touch!");
         if (deck == decks[current_player]) {
             boolean finished = advanceState(current_player);
+            if (finished) {
+                int winner = this.getVictor();
+                Toast.makeText(MainActivity.getContext(), "player " + winner + " has won the game!", Toast.LENGTH_LONG).show();
+            }
             try {
                 JSONObject msg = new JSONObject();
                 msg.put("type", "move");

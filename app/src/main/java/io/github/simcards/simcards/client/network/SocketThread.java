@@ -29,7 +29,7 @@ public class SocketThread implements Runnable {
 
 
 
-        socket.connect("tcp://143.215.94.247:5001");
+        socket.connect("tcp://143.215.91.143:5001");
 
 
         JSONObject connect_msg = new JSONObject();
