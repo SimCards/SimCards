@@ -15,13 +15,6 @@ import io.github.simcards.simcards.R;
 
 public class MenuActivity extends AppCompatActivity {
 
-
-    private static Context ctx;
-
-    private static Context getContext() {
-        return ctx;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +22,11 @@ public class MenuActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ctx = this;
-
         Button play = (Button) findViewById(R.id.button_play);
         play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.getContext(), "play functionality coming soon!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MenuActivity.getContext(), MainActivity.class);
+                Intent intent = new Intent(MenuActivity.this, MatchmakingActivity.class);
                 startActivity(intent);
             }
         });
@@ -45,7 +35,7 @@ public class MenuActivity extends AppCompatActivity {
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.getContext(), "create functionality coming soon!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MenuActivity.this, "create functionality coming soon!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -53,7 +43,7 @@ public class MenuActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.getContext(), "share functionality coming soon!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MenuActivity.this, "share functionality coming soon!", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -152,7 +152,7 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
             boolean finished = advanceState(current_player);
             if (finished) {
                 int winner = this.getVictor();
-                Toast.makeText(MainActivity.getContext(), "player " + winner + " has won the game!", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.getContext(), "Player " + winner + " has won the game!", Toast.LENGTH_LONG).show();
             }
             try {
                 JSONObject msg = new JSONObject();
@@ -192,7 +192,11 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
             int player_id = msg.getInt("player_id");
             System.out.println("Received move message from player_id " + player_id);
             if (player_id != current_player) {
-                advanceState(player_id);
+                boolean finished = advanceState(player_id);
+                if (finished) {
+                    int winner = this.getVictor();
+                    Toast.makeText(MainActivity.getContext(), "Player " + winner + " has won the game!", Toast.LENGTH_LONG).show();
+                }
             }
         } else {
             System.out.println("Unknown message type");

@@ -1,6 +1,7 @@
 package io.github.simcards.simcards.client.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.net.wifi.WifiManager;
 import android.opengl.GLSurfaceView;
@@ -90,7 +91,10 @@ public class MainActivity extends AppCompatActivity {
         AbsolutelyRankedWar game = new AbsolutelyRankedWar(socket);
         environment.registerTouchHandler(game);
 
-        new Thread(new SocketThread(socket, game)).start();
+        Intent intent = getIntent();
+        String addr = intent.getStringExtra(MatchmakingActivity.PARAM_IP_ADDRESS);
+
+        new Thread(new SocketThread(socket, addr, game)).start();
 
 //        System.out.println("advanceState1");
 //        game.advanceState(1);

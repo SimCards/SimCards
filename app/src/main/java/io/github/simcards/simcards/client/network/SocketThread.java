@@ -12,26 +12,23 @@ import org.zeromq.ZMQ;
 
 public class SocketThread implements Runnable {
 
-    ZMQ.Socket socket;
-    ZMQ.Context ctx;
-    MessageHandler handler;
+    private ZMQ.Socket socket;
+    private ZMQ.Context ctx;
+    private MessageHandler handler;
+    private String addr;
 
-    public SocketThread(ZMQ.Socket socket, MessageHandler handler) {
+    public SocketThread(ZMQ.Socket socket, String addr, MessageHandler handler) {
         this.socket = socket;
+        this.addr = addr;
         this.handler = handler;
         this.ctx = ZMQ.context(1);
     }
 
     @Override
     public void run() {
-
-
-
-
-
-        socket.connect("tcp://143.215.91.143:5001");
-
-
+        // connect and let the server know we are connected
+        Log.d("SimCards", "connecting to " + addr);
+        socket.connect("tcp://" + addr + ":5001");
         JSONObject connect_msg = new JSONObject();
         try {
             connect_msg.put("type","connected");
@@ -42,7 +39,7 @@ public class SocketThread implements Runnable {
             e.printStackTrace();
         }
 
-
+        // keep responding to received messages
         while(!Thread.currentThread().isInterrupted()) {
             String str_msg = socket.recvStr();
             System.out.println("Received message!");
