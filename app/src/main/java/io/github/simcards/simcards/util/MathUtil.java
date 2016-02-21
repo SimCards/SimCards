@@ -1,7 +1,5 @@
 package io.github.simcards.simcards.util;
 
-import android.opengl.Matrix;
-
 import java.util.Arrays;
 
 /**

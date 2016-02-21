@@ -1,11 +1,7 @@
 package io.github.simcards.simcards.client.graphics;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
+import android.content.res.Resources.NotFoundException;
 import android.opengl.GLES20;
-import android.opengl.GLUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,9 +10,6 @@ import java.io.InputStream;
  * Utility methods and constants for graphics.
  */
 public class GraphicsUtil {
-
-    /** The resources for the app. */
-    public static Resources sResources;
     /** The default shader program with no special effects. */
     public static int sShaderProgram;
 
@@ -35,11 +28,11 @@ public class GraphicsUtil {
     public static int loadShader(int type, int resource) {
         String shaderCode = "";
         try {
-            InputStream input = sResources.openRawResource(resource);
+            InputStream input = ResourceUtil.openRawResource(resource);
             byte[] buffer = new byte[input.available()];
             input.read(buffer);
             shaderCode = new String(buffer);
-        } catch (Resources.NotFoundException e) {
+        } catch (NotFoundException e) {
             System.out.println("Shader resource not found.");
             e.printStackTrace();
             return -1;
@@ -48,11 +41,12 @@ public class GraphicsUtil {
             e.printStackTrace();
             return -1;
         }
-        int shader = GLES20.glCreateShader(type);
+
+        int shader = GLWrapper.glCreateShader(type);
 
         // Add the source code to the shader and compile it.
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
+        GLWrapper.glShaderSource(shader, shaderCode);
+        GLWrapper.glCompileShader(shader);
 
         return shader;
     }
@@ -65,28 +59,18 @@ public class GraphicsUtil {
     public static int loadTexture(int resourceId) {
         int[] textureHandle = new int[1];
 
-        GLES20.glGenTextures(1, textureHandle, 0);
+        GLWrapper.glGenTextures(1, textureHandle, 0);
 
         if (textureHandle[0] != 0) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            // No pre-scaling.
-            options.inScaled = false;
-
-            // Read in the resource.
-            Bitmap bitmap = BitmapFactory.decodeResource(sResources, resourceId, options);
-
             // Bind to the texture in OpenGL.
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
+            GLWrapper.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 
             // Set filtering.
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
+            GLWrapper.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
+            GLWrapper.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_NEAREST);
 
-            // Load the bitmap into the bound texture.
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bitmap, 0);
-
-            // Recycle the bitmap, since its data has been loaded into OpenGL.
-            bitmap.recycle();
+            // Load the image into the texture.
+            GLWrapper.texImage2D(GLES20.GL_TEXTURE_2D, 0, resourceId, 0);
         } else {
             throw new RuntimeException("Error loading texture.");
         }

@@ -2,6 +2,7 @@ package io.github.simcards.simcards.game;
 
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
+import io.github.simcards.simcards.client.graphics.GLWrapper;
 import io.github.simcards.simcards.client.graphics.Shape;
 import io.github.simcards.simcards.util.Position;
 
@@ -44,18 +45,31 @@ public class Card {
         float bottom = position.y - halfCardHeight;
         float right = -position.x + halfCardWidth;
         float left = -position.x - halfCardWidth;
+        float[] textureCoordinates;
+        if (GLWrapper.desktopGL == null) {
+            textureCoordinates =
+                    new float[]{
+                            1.0f, 0.0f,
+                            1.0f, 1.0f,
+                            0.0f, 1.0f,
+                            0.0f, 0.0f,
+                    };
+        } else {
+            textureCoordinates =
+                    new float[]{
+                            1.0f, 1.0f,
+                            1.0f, 0.0f,
+                            0.0f, 0.0f,
+                            0.0f, 1.0f,
+                    };
+        }
         shape = new Shape(new float[]{
                 left, top, 0.0f,
                 left, bottom, 0.0f,
                 right, bottom, 0.0f,
                 right, top, 0.0f},
                 new short[]{0, 1, 2, 0, 2, 3},
-                new float[]{
-                        1.0f, 0.0f,
-                        1.0f, 1.0f,
-                        0.0f, 1.0f,
-                        0.0f, 0.0f,
-                },
+                textureCoordinates,
                 getImageLocation());
         GLRenderer.addShape(shape);
     }

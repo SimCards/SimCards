@@ -1,7 +1,5 @@
 package io.github.simcards.simcards.game;
 
-import android.view.MotionEvent;
-
 import java.util.List;
 import java.util.Vector;
 

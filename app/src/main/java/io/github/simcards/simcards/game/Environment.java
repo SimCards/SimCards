@@ -1,7 +1,5 @@
 package io.github.simcards.simcards.game;
 
-import android.text.method.Touch;
-
 import java.util.ArrayList;
 import java.util.List;
 

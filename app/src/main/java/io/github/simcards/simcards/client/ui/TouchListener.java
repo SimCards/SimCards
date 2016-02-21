@@ -7,7 +7,6 @@ import io.github.simcards.simcards.client.graphics.Camera;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
 import io.github.simcards.simcards.client.graphics.GraphicsUtil;
-import io.github.simcards.simcards.game.Deck;
 import io.github.simcards.simcards.game.Environment;
 import io.github.simcards.simcards.util.Position;
 

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,21 +17,14 @@ import android.view.ScaleGestureDetector;
 
 import org.zeromq.ZMQ;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
 import io.github.simcards.simcards.client.graphics.GraphicsUtil;
+import io.github.simcards.simcards.client.graphics.ResourceUtil;
 import io.github.simcards.simcards.client.network.SocketThread;
 import io.github.simcards.simcards.game.AbsolutelyRankedWar;
-import io.github.simcards.simcards.game.Card;
-import io.github.simcards.simcards.game.Deck;
 import io.github.simcards.simcards.game.Environment;
-import io.github.simcards.simcards.game.Rank;
-import io.github.simcards.simcards.game.Suit;
-import io.github.simcards.simcards.game.Visibility;
-import io.github.simcards.simcards.util.GridPosition;
 
 /**
  * Main activity screen.
@@ -62,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("Application started.");
 
-        GraphicsUtil.sResources = this.getResources();
+        ResourceUtil.sResources = this.getResources();
 
         // Get the Android screen size.
         Display display = getWindowManager().getDefaultDisplay();

@@ -18,7 +18,7 @@ public class Camera {
     public float maxY = 1;
 
     /** The initial z coordinate of the camera's position when initialized. */
-    public static final float INITIAL_SCALE = 1.1f;
+    public static final float INITIAL_SCALE = 1f;
     /** The minimum scale of the camera */
     public static final float MIN_SCALE = 0.5f;
     /** The maximum scale of the camera. */

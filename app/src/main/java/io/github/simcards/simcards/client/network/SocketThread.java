@@ -1,9 +1,5 @@
 package io.github.simcards.simcards.client.network;
 
-
-
-import android.net.wifi.WifiManager;
-import android.text.format.Formatter;
 import android.util.Log;
 
 import org.json.JSONException;

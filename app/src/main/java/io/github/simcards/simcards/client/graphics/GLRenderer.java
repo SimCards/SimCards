@@ -2,7 +2,8 @@ package io.github.simcards.simcards.client.graphics;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
+
+import com.jogamp.opengl.GL2ES2;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.util.MathUtil;
+import io.github.simcards.simcards.util.Matrix;
 import io.github.simcards.simcards.util.Position;
 
 /**
@@ -34,22 +36,27 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     /** The camera used to look at the playing field. */
     public static Camera sCamera = new Camera();
 
+    /** The vertex shader to use. */
+    private int vertexShader;
+    /** The fragment shader to use. */
+    private int fragmentShader;
+
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
-        int vertexShader = GraphicsUtil.loadShader(GLES20.GL_VERTEX_SHADER, R.raw.default_vert);
-        int fragmentShader = GraphicsUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, R.raw.default_frag);
+        vertexShader = GraphicsUtil.loadShader(GLES20.GL_VERTEX_SHADER, R.raw.default_vert);
+        fragmentShader = GraphicsUtil.loadShader(GLES20.GL_FRAGMENT_SHADER, R.raw.default_frag);
         // Create empty OpenGL ES Program.
-        int shaderProgram = GLES20.glCreateProgram();
+        int shaderProgram = GLWrapper.glCreateProgram();
         // Add the vertex shader to program.
-        GLES20.glAttachShader(shaderProgram, vertexShader);
+        GLWrapper.glAttachShader(shaderProgram, vertexShader);
         // Add the fragment shader to program.
-        GLES20.glAttachShader(shaderProgram, fragmentShader);
+        GLWrapper.glAttachShader(shaderProgram, fragmentShader);
         // Creates OpenGL ES program executables.
-        GLES20.glLinkProgram(shaderProgram);
+        GLWrapper.glLinkProgram(shaderProgram);
         GraphicsUtil.sShaderProgram = shaderProgram;
 
         // Set the background frame color.
-        GLES20.glClearColor(0.066f, 0.567f, 0.404f, 1.0f);
+        GLWrapper.glClearColor(0.066f, 0.567f, 0.404f, 1.0f);
     }
 
     @Override
@@ -58,7 +65,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
             mProjectionMatrix = MathUtil.scaleMatrix(mBaseProjectionMatrix, 1.0f / sCamera.scale);
         }
         // Redraw background color.
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLWrapper.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
         // Set the camera position (view matrix).
         Position cameraPosition = sCamera.position;
@@ -80,12 +87,26 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
     @Override
     public void onSurfaceChanged(GL10 unused, int width, int height) {
-        GLES20.glViewport(0, 0, width, height);
+        GLWrapper.glViewport(0, 0, width, height);
 
         float ratio = (float) width / height;
 
         // This projection matrix is applied to object coordinates in the onDrawFrame() method.
         Matrix.orthoM(mBaseProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 50);
+    }
+
+    /**
+     * Cleans up shaders after closing the desktop application.
+     */
+    public void exit() {
+        GL2ES2 gl = GLWrapper.desktopGL;
+        gl.glUseProgram(0);
+        gl.glDeleteBuffers(3, GLWrapper.vboHandles, 0);
+        gl.glDetachShader(GraphicsUtil.sShaderProgram, vertexShader);
+        gl.glDeleteShader(vertexShader);
+        gl.glDetachShader(GraphicsUtil.sShaderProgram, fragmentShader);
+        gl.glDeleteShader(fragmentShader);
+        gl.glDeleteProgram(GraphicsUtil.sShaderProgram);
     }
 
     /**

@@ -2,9 +2,7 @@ package io.github.simcards.simcards.client.ui;
 
 import android.view.ScaleGestureDetector;
 
-import io.github.simcards.simcards.client.graphics.Camera;
 import io.github.simcards.simcards.client.graphics.GLRenderer;
-import io.github.simcards.simcards.client.graphics.GraphicsUtil;
 
 /**
  * Listens for zoom gestures.

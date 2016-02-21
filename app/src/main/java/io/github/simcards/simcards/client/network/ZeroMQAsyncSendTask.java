@@ -1,7 +1,6 @@
 package io.github.simcards.simcards.client.network;
 
 import android.os.AsyncTask;
-import android.os.Handler;
 
 import org.json.JSONObject;
 import org.zeromq.ZMQ;
