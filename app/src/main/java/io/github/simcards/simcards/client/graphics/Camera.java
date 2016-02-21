@@ -50,11 +50,19 @@ public class Camera {
     }
 
     /**
-     * Adds a value to the camera scale, limited to a range of values.
-     * @param newScale The amount to add to the camera scale.
+     * Sets the camera scale limited to a range of values.
+     * @param newScale The new camera scale.
      */
     public void setScale(float newScale) {
         scale = MathUtil.limitValue(newScale, MIN_SCALE, maxScale);
+    }
+
+    /**
+     * Adds a value to the camera scale, limited to a range of values.
+     * @param increment The amount to add to the camera scale.
+     */
+    public void addScale(float increment) {
+        scale = MathUtil.limitValue(scale + increment, MIN_SCALE, maxScale);
     }
 
     /**

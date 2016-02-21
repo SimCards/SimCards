@@ -37,7 +37,7 @@ public class TouchListener extends GestureDetector.SimpleOnGestureListener {
         float offsetX = distanceX * speed;
         float offsetY = -distanceY * speed;
         camera.offsetPosition(offsetX, offsetY);
-        GLSurfaceViewWrapper.rerender();
+        GLRenderer.rerender();
         return false;
     }
 }

@@ -2,6 +2,8 @@ package io.github.simcards.simcards.util;
 
 import android.view.MotionEvent;
 
+import com.jogamp.newt.event.MouseEvent;
+
 /**
  * A position to use for rendering.
  */
@@ -30,6 +32,14 @@ public class Position {
      * @param event The touch event to initialize the position with.
      */
     public Position(MotionEvent event) {
+        this(event.getX(), event.getY());
+    }
+
+    /**
+     * Initializes a position from a mouse event.
+     * @param event The mouse event to initialize the position with.
+     */
+    public Position(MouseEvent event) {
         this(event.getX(), event.getY());
     }
 

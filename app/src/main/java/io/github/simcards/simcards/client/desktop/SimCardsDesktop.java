@@ -42,6 +42,12 @@ public class SimCardsDesktop {
         sAnimator = new Animator(glWindow);
         glWindow.addGLEventListener(new GLEventListenerDesktop());
 
+        KeyboardListener keyboard = new KeyboardListener();
+        glWindow.addKeyListener(keyboard);
+
+        MouseListener mouse = new MouseListener();
+        glWindow.addMouseListener(mouse);
+
         glWindow.setTitle("SimCards");
         GraphicsUtil.screenWidth = 350;
         GraphicsUtil.screenHeight = 700;

@@ -93,10 +93,12 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         // This projection matrix is applied to object coordinates in the onDrawFrame() method.
         Matrix.orthoM(mBaseProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 50);
+
+        rerender();
     }
 
     /**
-     * Cleans up shaders after closing the desktop application.
+     * Cleans up OpenGL after closing the desktop application.
      */
     public void exit() {
         GL2ES2 gl = GLWrapper.desktopGL;
@@ -117,7 +119,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         synchronized(shapes) {
             shapes.add(shape);
         }
-        GLSurfaceViewWrapper.rerender();
+        rerender();
     }
 
     /**
@@ -128,6 +130,14 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         synchronized(shapes) {
             shapes.remove(shape);
         }
+        rerender();
+    }
+
+    /**
+     * Rerenders the screen.
+     */
+    public static void rerender() {
         GLSurfaceViewWrapper.rerender();
+        sCamera.prevScale = -1;
     }
 }
