@@ -18,13 +18,27 @@ import android.view.ScaleGestureDetector;
 import org.zeromq.ZMQ;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.game.Deck;
+import io.github.simcards.libcards.game.Rank;
+import io.github.simcards.libcards.game.Suit;
+import io.github.simcards.libcards.game.Visibility;
+import io.github.simcards.libcards.util.Factory;
+import io.github.simcards.libcards.util.GridPosition;
+import io.github.simcards.libcards.util.Logger;
 import io.github.simcards.simcards.R;
+import io.github.simcards.simcards.client.graphics.AndroidGLWrapper;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
-import io.github.simcards.simcards.client.graphics.GraphicsUtil;
+import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.simcards.client.graphics.ResourceUtil;
-import io.github.simcards.simcards.client.network.SocketThread;
-import io.github.simcards.simcards.game.AbsolutelyRankedWar;
-import io.github.simcards.simcards.game.Environment;
+import io.github.simcards.libcards.network.SocketThread;
+import io.github.simcards.libcards.game.AbsolutelyRankedWar;
+import io.github.simcards.libcards.game.Environment;
+import io.github.simcards.simcards.client.util.AndroidLogger;
+import io.github.simcards.simcards.client.util.AndroidMiddleman;
 
 /**
  * Main activity screen.
@@ -49,11 +63,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ctx = this;
-
         System.out.println("Application started.");
-
+        Factory.init(new AndroidLogger(), new AndroidGLWrapper(), null, new AndroidMiddleman());
         ResourceUtil.sResources = this.getResources();
 
         // Get the Android screen size.
@@ -65,14 +77,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        mGLView = new GLSurfaceViewWrapper(this);
+        GLSurfaceViewWrapper glSurfaceViewWrapper = new GLSurfaceViewWrapper(this);
+        mGLView = glSurfaceViewWrapper;
+        Factory.setRerenderer(glSurfaceViewWrapper);
         setContentView(mGLView);
 
         mTouchDetector = new GestureDetectorCompat(this, new TouchListener());
         mZoomDetector = new ScaleGestureDetector(this, new ZoomListener());
 
         Environment environment = Environment.getEnvironment();
-
+//
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         System.out.println("Using ip address " + ip);
@@ -87,6 +101,27 @@ public class MainActivity extends AppCompatActivity {
         String addr = intent.getStringExtra(MatchmakingActivity.PARAM_IP_ADDRESS);
 
         new Thread(new SocketThread(socket, addr, game)).start();
+
+//        List<Card> cards = new ArrayList<>();
+//        cards.add(new Card(Rank.ACE, Suit.SPADE));
+//        Deck deck = new Deck(cards, new GridPosition(), Visibility.FACE_DOWN);
+//        environment.addNewDeck(deck);
+//
+//        List<Card> cards2 = new ArrayList<>();
+//        cards2.add(new Card(Rank.ACE, Suit.HEART));
+//        Deck deck2 = new Deck(cards2, new GridPosition(1, 0), Visibility.FACE_UP);
+//        environment.addNewDeck(deck2);
+//
+//        List<Card> cards3 = new ArrayList<>();
+//        cards3.add(new Card(Rank.ACE, Suit.CLUB));
+//        Deck deck3 = new Deck(cards3, new GridPosition(-1, 0), Visibility.FACE_UP);
+//        environment.addNewDeck(deck3);
+//
+//        List<Card> cards4 = new ArrayList<>();
+//        cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
+//        Deck deck4 = new Deck(cards4, new GridPosition(0, 1), Visibility.FACE_UP);
+//        environment.addNewDeck(deck4);
+
 
 //        System.out.println("advanceState1");
 //        game.advanceState(1);

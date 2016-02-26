@@ -9,15 +9,15 @@ import com.jogamp.opengl.util.Animator;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.simcards.simcards.client.graphics.GLRenderer;
-import io.github.simcards.simcards.client.graphics.GraphicsUtil;
-import io.github.simcards.simcards.game.Card;
-import io.github.simcards.simcards.game.Deck;
-import io.github.simcards.simcards.game.Environment;
-import io.github.simcards.simcards.game.Rank;
-import io.github.simcards.simcards.game.Suit;
-import io.github.simcards.simcards.game.Visibility;
-import io.github.simcards.simcards.util.GridPosition;
+import io.github.simcards.libcards.graphics.OtherGLRenderer;
+import io.github.simcards.libcards.graphics.GraphicsUtil;
+import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.game.Deck;
+import io.github.simcards.libcards.game.Environment;
+import io.github.simcards.libcards.game.Rank;
+import io.github.simcards.libcards.game.Suit;
+import io.github.simcards.libcards.game.Visibility;
+import io.github.simcards.libcards.util.GridPosition;
 
 /**
  * Desktop version of SimCards.
@@ -27,14 +27,15 @@ public class SimCardsDesktop {
     /** Used to display and update the window. */
     private static Animator sAnimator;
     /** The renderer used to display on the screen. */
-    public static GLRenderer sRenderer;
+    public static OtherGLRenderer sRenderer;
 
     /**
      * Initializes a window when the application starts.
      * @param args Unused.
      */
     public static void main(String[] args) {
-        sRenderer = new GLRenderer();
+        System.out.println("SimCardsDesktop");
+        sRenderer = new OtherGLRenderer();
 
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES2));
         GLWindow glWindow = GLWindow.create(caps);

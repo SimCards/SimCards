@@ -3,10 +3,12 @@ package io.github.simcards.simcards.client.graphics;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
+import io.github.simcards.libcards.util.IRerender;
+
 /**
  * Wrapper for GLSurfaceView for touch screen compatibility.
  */
-public class GLSurfaceViewWrapper extends GLSurfaceView {
+public class GLSurfaceViewWrapper extends GLSurfaceView implements IRerender {
 
     /** The surface view object currently in use. */
     private static GLSurfaceViewWrapper sSurfaceView;
@@ -46,7 +48,7 @@ public class GLSurfaceViewWrapper extends GLSurfaceView {
     /**
      * Marks the view as dirty, requiring a re-render.
      */
-    public static void rerender() {
+    public void rerender() {
         if (sSurfaceView != null) {
             sSurfaceView.requestRender();
         }

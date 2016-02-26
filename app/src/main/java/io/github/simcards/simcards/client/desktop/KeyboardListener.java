@@ -3,8 +3,8 @@ package io.github.simcards.simcards.client.desktop;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 
-import io.github.simcards.simcards.client.graphics.Camera;
-import io.github.simcards.simcards.client.graphics.GLRenderer;
+import io.github.simcards.libcards.graphics.Camera;
+import io.github.simcards.libcards.graphics.OtherGLRenderer;
 
 /**
  * Listens for keyboard input on the desktop application.
@@ -24,7 +24,7 @@ public class KeyboardListener implements KeyListener {
         float zoom = 0;
         short keyCode = key.getKeyCode();
         char keyChar = key.getKeyChar();
-        Camera camera = GLRenderer.sCamera;
+        Camera camera = OtherGLRenderer.sCamera;
 
         if (keyCode == 0x10 || keyChar == '-') {
             // Page up
@@ -51,7 +51,7 @@ public class KeyboardListener implements KeyListener {
         }
         if (offsetX != 0 || offsetY != 0) {
             camera.offsetPosition(offsetX, offsetY);
-            GLRenderer.rerender();
+            OtherGLRenderer.rerender();
         }
     }
 
