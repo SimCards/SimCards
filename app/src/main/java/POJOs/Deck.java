@@ -1,6 +1,9 @@
 package POJOs;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import io.github.simcards.simcards.game.Rank;
 
 /**
  * Created by Patrick on 2/25/2016.
@@ -85,6 +88,54 @@ public class Deck {
     }
 
     public Card getBottom() {
+
+    }
+
+    public Card removeTop() {
+
+    }
+
+    public Card removeBottom() {
+
+    }
+
+    public Card get(int index) {
+
+    }
+
+    public Card remove(int index) {
+
+    }
+
+    public List<Card> getBulk(int num_cards) {
+
+    }
+
+    public List<Card> removeBulk(int num_cards) {
+
+    }
+
+    public void insert(int index, Card card) {
+
+    }
+
+    public void insert(int index, List<Card> cards) {
+
+    }
+
+    public int size() {
+
+    }
+
+    public int countRank(Rank rank) {
+
+    }
+
+    public int countSuit(Suit suit) {
+
+    }
+
+    public int countRankSuit(Rank rank, Suit suit) {
 
     }
 }

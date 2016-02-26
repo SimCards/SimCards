@@ -3,7 +3,7 @@ package POJOs;
 /**
  * Created by Patrick on 2/25/2016.
  */
-public enum Value {
+public enum Rank {
     TWO,
     THREE,
     FOUR,

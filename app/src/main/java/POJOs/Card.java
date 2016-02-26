@@ -5,9 +5,9 @@ package POJOs;
  */
 public class Card {
     private final Suit suit;
-    private final Value value;
+    private final Rank value;
 
-    public Card(Suit su, Value val) {
+    public Card(Suit su, Rank val) {
         this.suit = su;
         this.value = val;
     }
@@ -16,7 +16,7 @@ public class Card {
         return suit;
     }
 
-    public Value getValue() {
+    public Rank getValue() {
         return value;
     }
 }
