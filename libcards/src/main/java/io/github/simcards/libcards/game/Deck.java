@@ -1,7 +1,7 @@
 package io.github.simcards.libcards.game;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import io.github.simcards.libcards.graphics.OtherGLRenderer;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
@@ -60,6 +60,10 @@ public class Deck {
         return success;
     }
 
+    /**
+     * Adds a card to the bottom of the deck.
+     * @param card The card to add.
+     */
     public void addToBottom(Card card) {
         cards.add(0, card);
         renderNextCard(card);
@@ -151,7 +155,7 @@ public class Deck {
      * Shuffles the order of the cards in the deck.
      */
     public void shuffle() {
-        List<Card> shuffled = new Vector<Card>(cards.size());
+        List<Card> shuffled = new ArrayList<Card>(cards.size());
         while (!cards.isEmpty()) {
             shuffled.add(RandomUtil.removeRandomElementInList(cards));
         }
@@ -166,7 +170,7 @@ public class Deck {
         Rank[] ranks = Rank.values();
         Suit[] suits = Suit.values();
 
-        List<Card> cards = new Vector<Card>(52);
+        List<Card> cards = new ArrayList<Card>(52);
         for (int i = 0; i < 52; i++) {
             Rank r = ranks[i / 4];
             Suit s = suits[i % 4];
