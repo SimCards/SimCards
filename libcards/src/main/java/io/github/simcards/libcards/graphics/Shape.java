@@ -1,13 +1,13 @@
-package io.github.simcards.simcards.client.graphics;
-
-import android.opengl.GLES20;
-
-import com.jogamp.common.nio.Buffers;
+package io.github.simcards.libcards.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+
+import io.github.simcards.libcards.graphics.GraphicsUtil;
+import io.github.simcards.libcards.graphics.IGLWrapper;
+import io.github.simcards.libcards.util.Factory;
 
 /**
  * A polygon to be rendered on the screen.
@@ -104,58 +104,59 @@ public class Shape {
     void draw(float[] mvpMatrix) {
         int shaderProgram = GraphicsUtil.sShaderProgram;
         // Add program to OpenGL ES environment.
-        GLWrapper.glUseProgram(shaderProgram);
+        IGLWrapper gl = Factory.gl();
+
+        gl.glUseProgram(shaderProgram);
 
         // Get handle to vertex shader's vPosition member.
-        int positionHandle = GLWrapper.glGetAttribLocation(shaderProgram, "vPosition");
+        int positionHandle = gl.glGetAttribLocation(shaderProgram, "vPosition");
 
         // Enable a handle to the shape vertices.
-        GLWrapper.glEnableVertexAttribArray(positionHandle);
+        gl.glEnableVertexAttribArray(positionHandle);
 
         // Prepare the shape coordinate data.
-        GLWrapper.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX,
-                GLES20.GL_FLOAT, false, mVertexStride, mVertexBuffer, 0,
-                mVertexBuffer.capacity() * Buffers.SIZEOF_FLOAT);
+        gl.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX,
+                IGLWrapper.GL_FLOAT, false, mVertexStride, mVertexBuffer, 0,
+                mVertexBuffer.capacity() * Float.SIZE);
 
         // Get handle to fragment shader's vColor member.
-        int colorHandle = GLWrapper.glGetUniformLocation(shaderProgram, "vColor");
+        int colorHandle = gl.glGetUniformLocation(shaderProgram, "vColor");
 
-        int textureUniformHandle = GLWrapper.glGetUniformLocation(shaderProgram, "uTexture");
-        int textureCoordinateHandle = GLWrapper.glGetAttribLocation(shaderProgram, "aTexCoordinate");
+        int textureUniformHandle = gl.glGetUniformLocation(shaderProgram, "uTexture");
+        int textureCoordinateHandle = gl.glGetAttribLocation(shaderProgram, "aTexCoordinate");
 
         // Set color for drawing the shape.
-        GLWrapper.glUniform4fv(colorHandle, 1, COLOR, 0);
+        gl.glUniform4fv(colorHandle, 1, COLOR, 0);
 
         // Set the active texture unit to texture unit 0.
-        GLWrapper.glActiveTexture(GLES20.GL_TEXTURE0);
+        gl.glActiveTexture(IGLWrapper.GL_TEXTURE0);
 
         // Bind the texture to this unit.
-        GLWrapper.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        gl.glBindTexture(IGLWrapper.GL_TEXTURE_2D, mTextureDataHandle);
 
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
-        GLWrapper.glUniform1i(textureUniformHandle, 0);
+        gl.glUniform1i(textureUniformHandle, 0);
 
         mTextureBuffer.position(0);
-        GLWrapper.glVertexAttribPointer(textureCoordinateHandle, COORDS_PER_TEXTURE,
-                GLES20.GL_FLOAT, false, 0, mTextureBuffer, 1,
-                mTextureBuffer.capacity() * Buffers.SIZEOF_FLOAT);
-        Float.SIZE;
+        gl.glVertexAttribPointer(textureCoordinateHandle, COORDS_PER_TEXTURE,
+                IGLWrapper.GL_FLOAT, false, 0, mTextureBuffer, 1,
+                mTextureBuffer.capacity() * Float.SIZE);
 
-        GLWrapper.glEnableVertexAttribArray(textureCoordinateHandle);
+        gl.glEnableVertexAttribArray(textureCoordinateHandle);
 
         // Get handle to shape's transformation matrix.
-        int mvpMatrixHandle = GLWrapper.glGetUniformLocation(shaderProgram, "uMVPMatrix");
+        int mvpMatrixHandle = gl.glGetUniformLocation(shaderProgram, "uMVPMatrix");
 
         // Pass the projection and view transformation to the shader.
-        GLWrapper.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
+        gl.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape.
-        GLWrapper.glDrawElements(GLES20.GL_TRIANGLES, mDrawOrder.length, GLES20.GL_UNSIGNED_SHORT,
-                mDrawListBuffer, 2, mDrawOrder.length * Buffers.SIZEOF_SHORT);
+        gl.glDrawElements(IGLWrapper.GL_TRIANGLES, mDrawOrder.length, IGLWrapper.GL_UNSIGNED_SHORT,
+                mDrawListBuffer, 2, mDrawOrder.length * Short.SIZE);
 
         // Disable arrays.
-        GLWrapper.glDisableVertexAttribArray(positionHandle);
-        GLWrapper.glDisableVertexAttribArray(textureCoordinateHandle);
+        gl.glDisableVertexAttribArray(positionHandle);
+        gl.glDisableVertexAttribArray(textureCoordinateHandle);
     }
 }
