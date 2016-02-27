@@ -21,7 +21,7 @@ import io.github.simcards.simcards.R;
 public class ResourceUtil {
 
     /** The resources for the app. */
-    public static Resources sResources;
+    public static Resources resources;
     /** The path to the resources folder. */
     private static final String resourcePath = "app/src/main/res/";
 
@@ -32,11 +32,11 @@ public class ResourceUtil {
      * @throws FileNotFoundException If the resource does not exist.
      */
     public static InputStream openRawResource(int id) throws FileNotFoundException {
-        if (sResources == null) {
+        if (resources == null) {
             File initialFile = new File(getResourcePath(id));
             return new FileInputStream(initialFile);
         } else {
-            return sResources.openRawResource(id);
+            return resources.openRawResource(id);
         }
     }
 

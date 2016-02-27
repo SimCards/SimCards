@@ -4,10 +4,9 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 import io.github.simcards.libcards.graphics.Camera;
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
-import io.github.simcards.simcards.client.graphics.GLRenderer;
+import io.github.simcards.libcards.graphics.GLRenderer;
+import io.github.simcards.libcards.graphics.GameScreen;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
-import io.github.simcards.libcards.game.Environment;
 import io.github.simcards.libcards.util.Position;
 
 /**
@@ -25,19 +24,18 @@ public class TouchListener extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onSingleTapUp(MotionEvent event) {
-        Environment environment = Environment.getEnvironment();
-        environment.touch(new Position(event.getX(), event.getY()));
+        GameScreen.getScreen().touch(new Position(event.getX(), event.getY()));
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Camera camera = OtherGLRenderer.sCamera;
-        float speed = PAN_SPEED * 800 / GraphicsUtil.screenHeight * OtherGLRenderer.sCamera.scale;
+        Camera camera = GLRenderer.camera;
+        float speed = PAN_SPEED * 800 / GraphicsUtil.screenHeight * GLRenderer.camera.scale;
         float offsetX = distanceX * speed;
         float offsetY = -distanceY * speed;
         camera.offsetPosition(offsetX, offsetY);
-        OtherGLRenderer.rerender();
+        GLRenderer.rerender();
         return false;
     }
 }

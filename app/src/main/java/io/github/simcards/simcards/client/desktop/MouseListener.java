@@ -3,9 +3,9 @@ package io.github.simcards.simcards.client.desktop;
 import com.jogamp.newt.event.MouseEvent;
 
 import io.github.simcards.libcards.graphics.Camera;
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
+import io.github.simcards.libcards.graphics.GLRenderer;
+import io.github.simcards.libcards.graphics.GameScreen;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
-import io.github.simcards.libcards.game.Environment;
 import io.github.simcards.libcards.util.Position;
 
 /**
@@ -24,8 +24,7 @@ public class MouseListener implements com.jogamp.newt.event.MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent event) {
-        Environment environment = Environment.getEnvironment();
-        environment.touch(new Position(event.getX(), event.getY()));
+        GameScreen.getScreen().touch(new Position(event.getX(), event.getY()));
     }
 
     @Override
@@ -36,12 +35,12 @@ public class MouseListener implements com.jogamp.newt.event.MouseListener {
         int deltaX = mouseX - lastX;
         int deltaY = mouseY - lastY;
 
-        Camera camera = OtherGLRenderer.sCamera;
-        float speed = PAN_SPEED * 800 / GraphicsUtil.screenHeight * OtherGLRenderer.sCamera.scale;
+        Camera camera = GLRenderer.camera;
+        float speed = PAN_SPEED * 800 / GraphicsUtil.screenHeight * GLRenderer.camera.scale;
         float offsetX = -deltaX * speed;
         float offsetY = deltaY * speed;
         camera.offsetPosition(offsetX, offsetY);
-        OtherGLRenderer.rerender();
+        GLRenderer.rerender();
 
         lastX = event.getX();
         lastY = event.getY();
@@ -71,6 +70,6 @@ public class MouseListener implements com.jogamp.newt.event.MouseListener {
 
     @Override
     public void mouseWheelMoved(MouseEvent event) {
-        OtherGLRenderer.sCamera.addScale(-ZOOM_SPEED * event.getRotation()[1]);
+        GLRenderer.camera.addScale(-ZOOM_SPEED * event.getRotation()[1]);
     }
 }

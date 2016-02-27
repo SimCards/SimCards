@@ -1,10 +1,9 @@
 package io.github.simcards.libcards.game;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.github.simcards.libcards.util.TouchHandler;
-import io.github.simcards.libcards.util.Position;
 
 /**
  * A field on which card games are played.
@@ -12,22 +11,20 @@ import io.github.simcards.libcards.util.Position;
 public class Environment {
 
     /** The decks present in the environment. */
-    public List<Deck> decks = new ArrayList<>();
+    private Map<Integer, Deck> decks = new HashMap<>();
+
+    /** Responds to touch events. */
+    private static TouchHandler touchHandler;
 
     /** The current instance of an environment. */
-    private static Environment sEnvironment;
-
-    private static TouchHandler touchHandler;
+    private static Environment environment = new Environment();
 
     /**
      * Gets the current environment instance.
      * @return The current environment instance.
      */
     public static Environment getEnvironment() {
-        if (sEnvironment == null) {
-            sEnvironment = new Environment();
-        }
-        return sEnvironment;
+        return environment;
     }
 
     /**
@@ -40,20 +37,44 @@ public class Environment {
      * @param deck The deck to add to the environment.
      */
     public void addNewDeck(Deck deck) {
-        decks.add(deck);
+        decks.put(deck.id, deck);
     }
 
+    /**
+     * Gets a deck by its ID.
+     * @param id The ID of the deck.
+     * @return The deck with the specified ID.
+     */
+    public Deck getDeck(int id) {
+        return decks.get(id);
+    }
+
+    /**
+     * Removes a deck from the environment.
+     * @param id The ID of the deck to remove.
+     * @return The deck removed from the environment.
+     */
+    public Deck removeDeck(int id) {
+        return decks.remove(id);
+    }
+
+    /**
+     * Handles a deck being touched.
+     * @param id The ID of the deck being touched.
+     */
+    public void touchDeck(int id) {
+        Deck deck = getDeck(id);
+        if (touchHandler != null) {
+            touchHandler.handleTouch(deck);
+        }
+        deck.touch();
+    }
+
+    /**
+     * Sets the touch handler for the environment.
+     * @param handler The touch handler for the environment.
+     */
     public void registerTouchHandler(TouchHandler handler) {
         touchHandler = handler;
-    }
-
-    public void touch(Position position) {
-        for (Deck deck : decks) {
-            if (deck.isTouched(position)) {
-                if (touchHandler != null)
-                    touchHandler.handleTouch(deck);
-                deck.touch();
-            }
-        }
     }
 }

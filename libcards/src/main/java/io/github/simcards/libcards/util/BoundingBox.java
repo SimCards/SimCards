@@ -6,13 +6,13 @@ package io.github.simcards.libcards.util;
 public class BoundingBox {
 
     /** The x coordinate of the left side of the bounding box. */
-    private float mLeft;
+    private float left;
     /** The x coordinate of the right side of the bounding box. */
-    private float mRight;
+    private float right;
     /** The y coordinate of the bottom of the bounding box. */
-    private float mBottom;
+    private float bottom;
     /** The y coordinate of the top of the bounding box. */
-    private float mTop;
+    private float top;
 
     /**
      * Creates a bounding box.
@@ -22,10 +22,10 @@ public class BoundingBox {
      * @param top The y coordinate of the top of the bounding box.
      */
     public BoundingBox(float left, float right, float bottom, float top) {
-        mLeft = left;
-        mRight = right;
-        mBottom = bottom;
-        mTop = top;
+        this.left = left;
+        this.right = right;
+        this.bottom = bottom;
+        this.top = top;
     }
 
     /**
@@ -34,7 +34,7 @@ public class BoundingBox {
      * @return Whether the position is inside the bounding box.
      */
     public boolean isInside(Position position) {
-        return MathUtil.isBetween(position.x, mLeft, mRight) &&
-                MathUtil.isBetween(position.y, mBottom, mTop);
+        return MathUtil.isBetween(position.x, left, right) &&
+                MathUtil.isBetween(position.y, bottom, top);
     }
 }

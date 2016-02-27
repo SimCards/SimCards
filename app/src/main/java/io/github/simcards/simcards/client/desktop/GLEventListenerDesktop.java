@@ -16,12 +16,14 @@ import io.github.simcards.simcards.client.util.AndroidMiddleman;
  */
 public class GLEventListenerDesktop implements GLEventListener {
 
+    /** The vertex shader used for rendering. */
     private int vertexShader;
+    /** The fragment shader used for rendering. */
     private int fragmentShader;
 
     @Override
     public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height ) {
-        SimCardsDesktop.sRenderer.onSurfaceChanged(width, height);
+        SimCardsDesktop.renderer.onSurfaceChanged(width, height);
     }
 
     @Override
@@ -30,17 +32,17 @@ public class GLEventListenerDesktop implements GLEventListener {
         Factory.init(new Logger(), new DesktopGLWrapper(gl), new NoRerender(), new AndroidMiddleman());
         vertexShader = AndroidGraphicsUtil.loadShader(IGLWrapper.GL_VERTEX_SHADER, R.raw.default_vert);
         fragmentShader = AndroidGraphicsUtil.loadShader(IGLWrapper.GL_FRAGMENT_SHADER, R.raw.default_frag);
-        SimCardsDesktop.sRenderer.onSurfaceCreated(vertexShader, fragmentShader);
+        SimCardsDesktop.renderer.onSurfaceCreated(vertexShader, fragmentShader);
     }
 
     @Override
     public void dispose(GLAutoDrawable glautodrawable) {
-        SimCardsDesktop.sRenderer.exit(vertexShader, fragmentShader);
+        SimCardsDesktop.renderer.exit(vertexShader, fragmentShader);
         SimCardsDesktop.exit();
     }
 
     @Override
     public void display(GLAutoDrawable glautodrawable) {
-        SimCardsDesktop.sRenderer.onDrawFrame();
+        SimCardsDesktop.renderer.onDrawFrame();
     }
 }

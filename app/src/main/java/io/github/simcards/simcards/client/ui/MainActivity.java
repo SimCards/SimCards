@@ -18,17 +18,7 @@ import android.view.ScaleGestureDetector;
 import org.zeromq.ZMQ;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.github.simcards.libcards.game.Card;
-import io.github.simcards.libcards.game.Deck;
-import io.github.simcards.libcards.game.Rank;
-import io.github.simcards.libcards.game.Suit;
-import io.github.simcards.libcards.game.Visibility;
 import io.github.simcards.libcards.util.Factory;
-import io.github.simcards.libcards.util.GridPosition;
-import io.github.simcards.libcards.util.Logger;
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.AndroidGLWrapper;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
@@ -46,15 +36,20 @@ import io.github.simcards.simcards.client.util.AndroidMiddleman;
 public class MainActivity extends AppCompatActivity {
 
     /** Surface for rendering objects. */
-    private GLSurfaceView mGLView;
+    private GLSurfaceView glView;
 
     /** Listens for touch gestures. */
-    private GestureDetectorCompat mTouchDetector;
+    private GestureDetectorCompat touchDetector;
     /** Listens for zoom gestures. */
-    private ScaleGestureDetector mZoomDetector;
+    private ScaleGestureDetector zoomDetector;
 
+    /** The context that the activity is in. */
     private static Context ctx;
 
+    /**
+     * Gets the context that the activity is in.
+     * @return The context that the activity is in.
+     */
     public static Context getContext() {
         if (ctx == null) throw new IllegalStateException();
         return ctx;
@@ -66,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         ctx = this;
         System.out.println("Application started.");
         Factory.init(new AndroidLogger(), new AndroidGLWrapper(), null, new AndroidMiddleman());
-        ResourceUtil.sResources = this.getResources();
+        ResourceUtil.resources = this.getResources();
 
         // Get the Android screen size.
         Display display = getWindowManager().getDefaultDisplay();
@@ -78,15 +73,15 @@ public class MainActivity extends AppCompatActivity {
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
         GLSurfaceViewWrapper glSurfaceViewWrapper = new GLSurfaceViewWrapper(this);
-        mGLView = glSurfaceViewWrapper;
+        glView = glSurfaceViewWrapper;
         Factory.setRerenderer(glSurfaceViewWrapper);
-        setContentView(mGLView);
+        setContentView(glView);
 
-        mTouchDetector = new GestureDetectorCompat(this, new TouchListener());
-        mZoomDetector = new ScaleGestureDetector(this, new ZoomListener());
+        touchDetector = new GestureDetectorCompat(this, new TouchListener());
+        zoomDetector = new ScaleGestureDetector(this, new ZoomListener());
 
         Environment environment = Environment.getEnvironment();
-//
+
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         System.out.println("Using ip address " + ip);
@@ -137,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mZoomDetector.onTouchEvent(event);
-        mTouchDetector.onTouchEvent(event);
+        zoomDetector.onTouchEvent(event);
+        touchDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 

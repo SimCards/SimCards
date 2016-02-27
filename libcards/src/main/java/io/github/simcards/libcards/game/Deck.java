@@ -3,11 +3,9 @@ package io.github.simcards.libcards.game;
 import java.util.List;
 import java.util.Vector;
 
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
-import io.github.simcards.libcards.graphics.GraphicsUtil;
-import io.github.simcards.libcards.util.BoundingBox;
+import io.github.simcards.libcards.graphics.DeckView;
+import io.github.simcards.libcards.graphics.GameScreen;
 import io.github.simcards.libcards.util.GridPosition;
-import io.github.simcards.libcards.util.Position;
 import io.github.simcards.libcards.util.RandomUtil;
 
 /**
@@ -15,12 +13,15 @@ import io.github.simcards.libcards.util.RandomUtil;
  */
 public class Deck {
 
+    /** The ID of the deck, used to sync it with client-side DeckViews. */
+    final int id;
     /** The cards in the deck. */
-    private List<Card> cards;
-    /** The grid position of the deck's base on the field. */
-    public GridPosition gridPosition;
+    public List<Card> cards;
     /** The visibility of the cards in the deck. */
     public Visibility visibility;
+
+    /** Counter used to assign unique deck IDs. */
+    private static int idCounter;
 
     /**
      * Creates a deck of cards.
@@ -28,17 +29,11 @@ public class Deck {
      * @param visibility The visibility of the deck.
      */
     public Deck(List<Card> cards, GridPosition gridPosition, Visibility visibility) {
+        this.id = idCounter++;
         this.cards = cards;
-        this.gridPosition = gridPosition;
         this.visibility = visibility;
-        int deckSize = cards.size();
-        for (int i = 0; i < deckSize; i++) {
-            Card card = cards.get(i);
-            renderNextCard(card);
-            if (visibility == Visibility.TOP_FACE_UP && i < deckSize - 1) {
-                card.setFaceUp(false);
-            }
-        }
+        // TODO: Change to a packet.
+        GameScreen.getScreen().addNewDeck(new DeckView(this, gridPosition));
     }
 
     /**
@@ -49,40 +44,18 @@ public class Deck {
     public boolean addElement(Card card) {
         boolean success = cards.add(card);
         if (success) {
-            renderNextCard(card);
-            if (visibility == Visibility.TOP_FACE_UP) {
-                Card prevTopCard = getOffsetTopCard(1);
-                if (prevTopCard != null) {
-                    prevTopCard.setFaceUp(false);
-                }
-            }
+            // TODO: Change to a packet.
+            GameScreen.getScreen().getDeck(id).addElement(card);
         }
         return success;
     }
 
+    /**
+     * Adds a card to the bottom of the deck.
+     * @param card The card to add to the deck.
+     */
     public void addToBottom(Card card) {
         cards.add(0, card);
-        renderNextCard(card);
-        if (visibility == Visibility.TOP_FACE_UP) {
-            Card prevTopCard = getOffsetTopCard(1);
-            if (prevTopCard != null) {
-                prevTopCard.setFaceUp(false);
-            }
-        }
-    }
-
-    /**
-     * Draws a card on the screen at the appropriate place on the top of the deck.
-     * @param card The card to draw.
-     */
-    private void renderNextCard(Card card) {
-        if (visibility == Visibility.FACE_DOWN) {
-            card.setFaceUp(false);
-        } else {
-            card.setFaceUp(true);
-        }
-        Position worldPosition = gridPosition.getWorldPosition();
-        card.createShape(worldPosition);
     }
 
     /**
@@ -96,7 +69,8 @@ public class Deck {
             return pop();
         } else if (cardIndex > 0) {
             cards.remove(card);
-            card.removeShape();
+            // TODO: Change to a packet.
+            GameScreen.getScreen().getDeck(id).remove(card);
             return card;
         } else {
             return null;
@@ -139,10 +113,7 @@ public class Deck {
             return null;
         } else {
             Card topCard = cards.remove(cards.size() - 1);
-            topCard.removeShape();
-            if (visibility == Visibility.TOP_FACE_UP && !cards.isEmpty()) {
-                getTopCard().setFaceUp(true);
-            }
+            GameScreen.getScreen().getDeck(id).pop(topCard);
             return topCard;
         }
     }
@@ -185,38 +156,9 @@ public class Deck {
     }
 
     /**
-     * Checks whether the deck is being touched.
-     * @param touchPosition The position where the screen was touched.
-     * @return Whether the deck is being touched.
-     */
-    boolean isTouched(Position touchPosition) {
-        // Convert the touch position to world coordinates.
-        float halfScreenHeight = GraphicsUtil.screenHeight / 2;
-        Position position = touchPosition.clone();
-        position.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
-        position.invertY();
-        position.scale(OtherGLRenderer.sCamera.scale / halfScreenHeight);
-        position.addPosition(OtherGLRenderer.sCamera.position);
-        BoundingBox boundingBox = getBoundingBox();
-        return boundingBox.isInside(position);
-    }
-
-    /**
-     * Gets the bounding box around the deck.
-     * @return The bounding box around the deck.
-     */
-    private BoundingBox getBoundingBox() {
-        Position deckPosition = gridPosition.getWorldPosition();
-        float xOffset = Card.getScaledCenterOffsetX();
-        float yOffset = Card.getScaledCenterOffsetY();
-        return new BoundingBox(deckPosition.x - xOffset, deckPosition.x + xOffset,
-                deckPosition.y - yOffset, deckPosition.y + yOffset);
-    }
-
-    /**
      * Does an action upon the deck being touched.
      */
-    void touch() {
+    public void touch() {
         // Process the deck touch.
         Card topCard = getTopCard();
         if (topCard != null) {

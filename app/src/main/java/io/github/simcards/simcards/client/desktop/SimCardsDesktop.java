@@ -9,7 +9,7 @@ import com.jogamp.opengl.util.Animator;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
+import io.github.simcards.libcards.graphics.GLRenderer;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.libcards.game.Card;
 import io.github.simcards.libcards.game.Deck;
@@ -25,22 +25,21 @@ import io.github.simcards.libcards.util.GridPosition;
 public class SimCardsDesktop {
 
     /** Used to display and update the window. */
-    private static Animator sAnimator;
+    private static Animator animator;
     /** The renderer used to display on the screen. */
-    public static OtherGLRenderer sRenderer;
+    public static GLRenderer renderer;
 
     /**
      * Initializes a window when the application starts.
      * @param args Unused.
      */
     public static void main(String[] args) {
-        System.out.println("SimCardsDesktop");
-        sRenderer = new OtherGLRenderer();
+        renderer = new GLRenderer();
 
         GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES2));
         GLWindow glWindow = GLWindow.create(caps);
 
-        sAnimator = new Animator(glWindow);
+        animator = new Animator(glWindow);
         glWindow.addGLEventListener(new GLEventListenerDesktop());
 
         KeyboardListener keyboard = new KeyboardListener();
@@ -54,7 +53,7 @@ public class SimCardsDesktop {
         GraphicsUtil.screenHeight = 700;
         glWindow.setSize(GraphicsUtil.screenWidth, GraphicsUtil.screenHeight);
         glWindow.setVisible(true);
-        sAnimator.start();
+        animator.start();
 
         Environment environment = Environment.getEnvironment();
         List<Card> cards = new ArrayList<>();
@@ -82,6 +81,6 @@ public class SimCardsDesktop {
      * Stops the animator when the system terminates.
      */
     public static void exit() {
-        sAnimator.stop();
+        animator.stop();
     }
 }

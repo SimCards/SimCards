@@ -1,30 +1,28 @@
 package io.github.simcards.simcards.client.util;
 
+import io.github.simcards.libcards.graphics.CardShape;
 import io.github.simcards.libcards.util.IMiddleman;
 import io.github.simcards.simcards.R;
 import io.github.simcards.libcards.game.Card;
 
 /**
+ * Loads card resources on Android.
  * Created by Vishal on 2/26/16.
  */
 public class AndroidMiddleman implements IMiddleman {
 
-    public AndroidMiddleman() {
-
-    }
-
     @Override
-    public int getImageLocation(Card c) {
+    public int getImageLocation(CardShape c) {
         if (!c.getFaceUp()) {
             return R.drawable.face_down;
         }
-        switch(c.suit) {
+        switch(c.card.suit) {
             case BLACKJOKER:
                 return R.drawable.black_joker;
             case REDJOKER:
                 return R.drawable.red_joker;
             case SPADE:
-                switch(c.rank) {
+                switch(c.card.rank) {
                     case ACE: return R.drawable.ace_of_spades;
                     case TWO: return R.drawable.two_of_spades;
                     case THREE: return R.drawable.three_of_spades;
@@ -40,7 +38,7 @@ public class AndroidMiddleman implements IMiddleman {
                     case KING: return R.drawable.king_of_spades;
                 }
             case HEART:
-                switch(c.rank) {
+                switch(c.card.rank) {
                     case ACE: return R.drawable.ace_of_hearts;
                     case TWO: return R.drawable.two_of_hearts;
                     case THREE: return R.drawable.three_of_hearts;
@@ -56,7 +54,7 @@ public class AndroidMiddleman implements IMiddleman {
                     case KING: return R.drawable.king_of_hearts;
                 }
             case CLUB:
-                switch(c.rank) {
+                switch(c.card.rank) {
                     case ACE: return R.drawable.ace_of_clubs;
                     case TWO: return R.drawable.two_of_clubs;
                     case THREE: return R.drawable.three_of_clubs;
@@ -72,7 +70,7 @@ public class AndroidMiddleman implements IMiddleman {
                     case KING: return R.drawable.king_of_clubs;
                 }
             case DIAMOND:
-                switch(c.rank) {
+                switch(c.card.rank) {
                     case ACE: return R.drawable.ace_of_diamonds;
                     case TWO: return R.drawable.two_of_diamonds;
                     case THREE: return R.drawable.three_of_diamonds;

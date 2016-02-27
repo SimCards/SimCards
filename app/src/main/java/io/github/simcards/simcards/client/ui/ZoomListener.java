@@ -2,8 +2,7 @@ package io.github.simcards.simcards.client.ui;
 
 import android.view.ScaleGestureDetector;
 
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
-import io.github.simcards.simcards.client.graphics.GLRenderer;
+import io.github.simcards.libcards.graphics.GLRenderer;
 
 /**
  * Listens for zoom gestures.
@@ -18,14 +17,14 @@ public class ZoomListener extends ScaleGestureDetector.SimpleOnScaleGestureListe
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        initScale = OtherGLRenderer.sCamera.scale;
+        initScale = GLRenderer.camera.scale;
         return true;
     }
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
         float newScale = initScale * detector.getScaleFactor() * ZOOM_SPEED;
-        OtherGLRenderer.sCamera.setScale(newScale);
+        GLRenderer.camera.setScale(newScale);
 
         return false;
     }

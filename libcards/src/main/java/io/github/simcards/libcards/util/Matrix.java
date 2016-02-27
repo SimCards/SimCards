@@ -67,18 +67,14 @@ public class Matrix {
      */
     public static void multiplyMM(float[] result, int resultOffset,
                                          float[] lhs, int lhsOffset, float[] rhs, int rhsOffset) {
-//        if (GLWrapper.desktopGL == null) {
-//            android.opengl.Matrix.multiplyMM(result, resultOffset, lhs, lhsOffset, rhs, rhsOffset);
-//        } else {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    result[i * 4 + j] = 0;
-                    for (int k = 0; k < 4; k++) {
-                        result[i * 4 + j] += lhs[k * 4 + j] * rhs[i * 4 + k];
-                    }
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                result[i * 4 + j] = 0;
+                for (int k = 0; k < 4; k++) {
+                    result[i * 4 + j] += lhs[k * 4 + j] * rhs[i * 4 + k];
                 }
             }
-//        }
+        }
     }
 
     /**

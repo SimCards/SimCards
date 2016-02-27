@@ -2,36 +2,32 @@ package io.github.simcards.simcards.client.graphics;
 
 import android.opengl.GLSurfaceView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import io.github.simcards.libcards.graphics.Camera;
-import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.libcards.graphics.IGLWrapper;
-import io.github.simcards.libcards.graphics.OtherGLRenderer;
-import io.github.simcards.libcards.graphics.Shape;
-import io.github.simcards.libcards.util.Factory;
-import io.github.simcards.libcards.util.MathUtil;
-import io.github.simcards.libcards.util.Matrix;
-import io.github.simcards.libcards.util.Position;
+import io.github.simcards.libcards.graphics.GLRenderer;
 import io.github.simcards.simcards.R;
 
 /**
- * Renders shapes on the screen.
+ * Android interface to the renderer.
  */
-public class GLRenderer implements GLSurfaceView.Renderer {
+public class AndroidGLRenderer implements GLSurfaceView.Renderer {
 
-    private OtherGLRenderer glRenderer;
+    /** The renderer displaying objects on the screen. */
+    private GLRenderer glRenderer;
 
+    /** The vertex shader to use when rendering. */
     private int vertexShader;
+    /** The fragment shader to use when rendering. */
     private int fragmentShader;
 
-    public GLRenderer() {
+    /**
+     * Initializes the renderer.
+     */
+    public AndroidGLRenderer() {
         super();
-        glRenderer = new OtherGLRenderer();
+        glRenderer = new GLRenderer();
     }
 
     @Override
@@ -51,6 +47,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         glRenderer.onSurfaceChanged(width, height);
     }
 
+    /**
+     * Cleans up shaders when the program terminates.
+     */
     public void exit() {
         glRenderer.exit(vertexShader, fragmentShader);
     }

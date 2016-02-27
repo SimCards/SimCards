@@ -1,6 +1,6 @@
 package io.github.simcards.libcards.util;
 
-import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.graphics.CardShape;
 
 /**
  * Keeps track of position in grid cells.
@@ -33,7 +33,7 @@ public class GridPosition {
      * @return The center of the grid cell in world coordinates.
      */
     public Position getWorldPosition() {
-        return new Position(x * Card.CARD_HEIGHT, y * Card.CARD_HEIGHT);
+        return new Position(x * CardShape.CARD_HEIGHT, y * CardShape.CARD_HEIGHT);
     }
 
     @Override
@@ -44,5 +44,10 @@ public class GridPosition {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return x << 16 | y & 0xFFFF;
     }
 }

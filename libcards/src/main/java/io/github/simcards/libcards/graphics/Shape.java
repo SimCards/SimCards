@@ -5,8 +5,6 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
-import io.github.simcards.libcards.graphics.GraphicsUtil;
-import io.github.simcards.libcards.graphics.IGLWrapper;
 import io.github.simcards.libcards.util.Factory;
 
 /**
@@ -15,26 +13,26 @@ import io.github.simcards.libcards.util.Factory;
 public class Shape {
 
     /** Buffer of vertices in the shape. */
-    private FloatBuffer mVertexBuffer;
+    private FloatBuffer vertexBuffer;
     /** Buffer of triangle indices in the shape. */
-    private ShortBuffer mDrawListBuffer;
+    private ShortBuffer drawListBuffer;
     /** Store our model data in a float buffer. */
-    private FloatBuffer mTextureBuffer;
+    private FloatBuffer textureBuffer;
     /** The number of coordinates per vertex. */
     private final int COORDS_PER_VERTEX = 3;
     /** The coordinates of the vertices in the shape. */
-    private float[] mShapeCoords;
+    private float[] shapeCoords;
     /** The triangle indices for the shape. */
-    private short[] mDrawOrder;
+    private short[] drawOrder;
     /** The number of bytes per vertex. */
-    private int mVertexStride;
+    private int vertexStride;
 
     /** The color of the shape. */
     private final float COLOR[] = { 1.0f, 1.0f, 1.0f, 1.0f };
     /** Size of the texture coordinate data in elements. */
     private final int COORDS_PER_TEXTURE = 2;
     /** A handle to the shape's texture data. */
-    private int mTextureDataHandle = -1;
+    private int textureDataHandle = -1;
 
     /** The index of the texture to use for the shape. */
     public int textureID;
@@ -47,24 +45,24 @@ public class Shape {
      * @param textureID The index of the texture to use for the shape.
      */
     public Shape(float[] coords, short[] vertices, float[] textureCoords, int textureID) {
-        mDrawOrder = vertices;
-        mShapeCoords = coords;
+        drawOrder = vertices;
+        shapeCoords = coords;
         // 4 bytes per vertex.
-        mVertexStride = COORDS_PER_VERTEX * 4;
+        vertexStride = COORDS_PER_VERTEX * 4;
 
         // Initialize vertex byte buffer for shape coordinates.
         // (# of coordinate values * 4 bytes per float)
-        mVertexBuffer = makeFloatBuffer(mShapeCoords);
+        vertexBuffer = makeFloatBuffer(shapeCoords);
 
         // Initialize byte buffer for the draw list.
         // (# of coordinate values * 2 bytes per short)
-        ByteBuffer dlb = ByteBuffer.allocateDirect(mDrawOrder.length * 2);
+        ByteBuffer dlb = ByteBuffer.allocateDirect(drawOrder.length * 2);
         dlb.order(ByteOrder.nativeOrder());
-        mDrawListBuffer = dlb.asShortBuffer();
-        mDrawListBuffer.put(mDrawOrder);
-        mDrawListBuffer.position(0);
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(drawOrder);
+        drawListBuffer.position(0);
 
-        mTextureBuffer = makeFloatBuffer(textureCoords);
+        textureBuffer = makeFloatBuffer(textureCoords);
 
         this.textureID = textureID;
     }
@@ -73,8 +71,8 @@ public class Shape {
      * Initializes the shape's texture if it is not initialized;
      */
     void initializeTexture() {
-        if (mTextureDataHandle == -1) {
-            mTextureDataHandle = GraphicsUtil.loadTexture(textureID);
+        if (textureDataHandle == -1) {
+            textureDataHandle = GraphicsUtil.loadTexture(textureID);
         }
     }
 
@@ -82,7 +80,7 @@ public class Shape {
      * Refreshes the shape's texture.
      */
     public void resetTexture() {
-        mTextureDataHandle = -1;
+        textureDataHandle = -1;
     }
 
     /**
@@ -116,8 +114,8 @@ public class Shape {
 
         // Prepare the shape coordinate data.
         gl.glVertexAttribPointer(positionHandle, COORDS_PER_VERTEX,
-                IGLWrapper.GL_FLOAT, false, mVertexStride, mVertexBuffer, 0,
-                mVertexBuffer.capacity() * Float.SIZE);
+                IGLWrapper.GL_FLOAT, false, vertexStride, vertexBuffer, 0,
+                vertexBuffer.capacity() * Float.SIZE);
 
         // Get handle to fragment shader's vColor member.
         int colorHandle = gl.glGetUniformLocation(shaderProgram, "vColor");
@@ -132,16 +130,16 @@ public class Shape {
         gl.glActiveTexture(IGLWrapper.GL_TEXTURE0);
 
         // Bind the texture to this unit.
-        gl.glBindTexture(IGLWrapper.GL_TEXTURE_2D, mTextureDataHandle);
+        gl.glBindTexture(IGLWrapper.GL_TEXTURE_2D, textureDataHandle);
 
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
         gl.glUniform1i(textureUniformHandle, 0);
 
-        mTextureBuffer.position(0);
+        textureBuffer.position(0);
         gl.glVertexAttribPointer(textureCoordinateHandle, COORDS_PER_TEXTURE,
-                IGLWrapper.GL_FLOAT, false, 0, mTextureBuffer, 1,
-                mTextureBuffer.capacity() * Float.SIZE);
+                IGLWrapper.GL_FLOAT, false, 0, textureBuffer, 1,
+                textureBuffer.capacity() * Float.SIZE);
 
         gl.glEnableVertexAttribArray(textureCoordinateHandle);
 
@@ -152,8 +150,8 @@ public class Shape {
         gl.glUniformMatrix4fv(mvpMatrixHandle, 1, false, mvpMatrix, 0);
 
         // Draw the shape.
-        gl.glDrawElements(IGLWrapper.GL_TRIANGLES, mDrawOrder.length, IGLWrapper.GL_UNSIGNED_SHORT,
-                mDrawListBuffer, 2, mDrawOrder.length * Short.SIZE);
+        gl.glDrawElements(IGLWrapper.GL_TRIANGLES, drawOrder.length, IGLWrapper.GL_UNSIGNED_SHORT,
+                drawListBuffer, 2, drawOrder.length * Short.SIZE);
 
         // Disable arrays.
         gl.glDisableVertexAttribArray(positionHandle);
