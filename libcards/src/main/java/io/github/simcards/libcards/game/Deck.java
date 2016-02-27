@@ -1,11 +1,9 @@
 package io.github.simcards.libcards.game;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
-import io.github.simcards.libcards.graphics.DeckView;
 import io.github.simcards.libcards.graphics.GameScreen;
-import io.github.simcards.libcards.util.GridPosition;
 import io.github.simcards.libcards.util.RandomUtil;
 
 /**
@@ -14,7 +12,7 @@ import io.github.simcards.libcards.util.RandomUtil;
 public class Deck {
 
     /** The ID of the deck, used to sync it with client-side DeckViews. */
-    final int id;
+    public final int id;
     /** The cards in the deck. */
     public List<Card> cards;
     /** The visibility of the cards in the deck. */
@@ -28,12 +26,10 @@ public class Deck {
      * @param cards The cards initially in the deck.
      * @param visibility The visibility of the deck.
      */
-    public Deck(List<Card> cards, GridPosition gridPosition, Visibility visibility) {
+    public Deck(List<Card> cards, Visibility visibility) {
         this.id = idCounter++;
         this.cards = cards;
         this.visibility = visibility;
-        // TODO: Change to a packet.
-        GameScreen.getScreen().addNewDeck(new DeckView(this, gridPosition));
     }
 
     /**
@@ -122,7 +118,7 @@ public class Deck {
      * Shuffles the order of the cards in the deck.
      */
     public void shuffle() {
-        List<Card> shuffled = new Vector<Card>(cards.size());
+        List<Card> shuffled = new ArrayList<>(cards.size());
         while (!cards.isEmpty()) {
             shuffled.add(RandomUtil.removeRandomElementInList(cards));
         }
@@ -137,7 +133,7 @@ public class Deck {
         Rank[] ranks = Rank.values();
         Suit[] suits = Suit.values();
 
-        List<Card> cards = new Vector<Card>(52);
+        List<Card> cards = new ArrayList<>(52);
         for (int i = 0; i < 52; i++) {
             Rank r = ranks[i / 4];
             Suit s = suits[i % 4];

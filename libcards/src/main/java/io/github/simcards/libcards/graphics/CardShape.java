@@ -99,15 +99,15 @@ public class CardShape {
      * Gets the screen distance from a card's center to its side.
      * @return The screen distance from a card's center to its side.
      */
-    public static float getScaledCenterOffsetX() {
-        return CARD_WIDTH / 2 * GLRenderer.camera.scale;
+    public static float getCenterOffsetX() {
+        return CARD_WIDTH / 2;
     }
 
     /**
      * Gets the screen distance from a card's center to its top or bottom.
      * @return The screen distance from a card's center to its top or bottom.
      */
-    public static float getScaledCenterOffsetY() {
-        return CARD_HEIGHT / 2 * GLRenderer.camera.scale;
+    public static float getCenterOffsetY() {
+        return CARD_HEIGHT / 2;
     }
 }

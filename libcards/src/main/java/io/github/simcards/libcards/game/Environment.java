@@ -3,6 +3,9 @@ package io.github.simcards.libcards.game;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.simcards.libcards.graphics.DeckView;
+import io.github.simcards.libcards.graphics.GameScreen;
+import io.github.simcards.libcards.util.GridPosition;
 import io.github.simcards.libcards.util.TouchHandler;
 
 /**
@@ -35,9 +38,12 @@ public class Environment {
     /**
      * Adds a deck to the environment.
      * @param deck The deck to add to the environment.
+     * @param gridPosition The position of the deck.
      */
-    public void addNewDeck(Deck deck) {
+    public void addNewDeck(Deck deck, GridPosition gridPosition) {
         decks.put(deck.id, deck);
+        // TODO: Change to a packet.
+        GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition));
     }
 
     /**
@@ -55,6 +61,8 @@ public class Environment {
      * @return The deck removed from the environment.
      */
     public Deck removeDeck(int id) {
+        // TODO: Change to a packet.
+        GameScreen.getScreen().removeDeck(id);
         return decks.remove(id);
     }
 

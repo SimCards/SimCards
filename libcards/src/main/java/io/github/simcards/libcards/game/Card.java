@@ -17,6 +17,8 @@ public class Card {
 
     /**
      * Initializes a card.
+     * @param rank The card's rank.
+     * @param suit The card's suit.
      */
     public Card(Rank rank, Suit suit) {
         this.rank = rank;

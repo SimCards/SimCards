@@ -58,23 +58,23 @@ public class SimCardsDesktop {
         Environment environment = Environment.getEnvironment();
         List<Card> cards = new ArrayList<>();
         cards.add(new Card(Rank.ACE, Suit.SPADE));
-        Deck deck = new Deck(cards, new GridPosition(), Visibility.FACE_DOWN);
-        environment.addNewDeck(deck);
+        Deck deck = new Deck(cards, Visibility.FACE_DOWN);
+        environment.addNewDeck(deck, new GridPosition());
 
         List<Card> cards2 = new ArrayList<>();
         cards2.add(new Card(Rank.ACE, Suit.HEART));
-        Deck deck2 = new Deck(cards2, new GridPosition(1, 0), Visibility.FACE_UP);
-        environment.addNewDeck(deck2);
+        Deck deck2 = new Deck(cards2, Visibility.FACE_UP);
+        //environment.addNewDeck(deck2, new GridPosition(1, 0));
 
         List<Card> cards3 = new ArrayList<>();
         cards3.add(new Card(Rank.ACE, Suit.CLUB));
-        Deck deck3 = new Deck(cards3, new GridPosition(-1, 0), Visibility.FACE_UP);
-        environment.addNewDeck(deck3);
+        Deck deck3 = new Deck(cards3, Visibility.FACE_UP);
+        //environment.addNewDeck(deck3, new GridPosition(-1, 0));
 
         List<Card> cards4 = new ArrayList<>();
         cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
-        Deck deck4 = new Deck(cards4, new GridPosition(0, 1), Visibility.FACE_UP);
-        environment.addNewDeck(deck4);
+        Deck deck4 = new Deck(cards4, Visibility.FACE_UP);
+        //environment.addNewDeck(deck4, new GridPosition(0, 1));
     }
 
     /**

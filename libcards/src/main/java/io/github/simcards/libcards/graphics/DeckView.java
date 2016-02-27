@@ -15,7 +15,7 @@ public class DeckView {
     /** The deck represented by this view. */
     private Deck deck;
     /** The ID of the deck, used to sync it with server-side Decks. */
-    int id;
+    final int id;
     /** The grid position of the deck's base on the field. */
     private GridPosition gridPosition;
 
@@ -26,6 +26,7 @@ public class DeckView {
      */
     public DeckView(Deck deck, GridPosition position) {
         this.deck = deck;
+        id = deck.id;
         gridPosition = position;
         int deckSize = deck.cards.size();
         for (int i = 0; i < deckSize; i++) {
@@ -113,8 +114,8 @@ public class DeckView {
      */
     private BoundingBox getBoundingBox() {
         Position deckPosition = gridPosition.getWorldPosition();
-        float xOffset = CardShape.getScaledCenterOffsetX();
-        float yOffset = CardShape.getScaledCenterOffsetY();
+        float xOffset = CardShape.getCenterOffsetX();
+        float yOffset = CardShape.getCenterOffsetY();
         return new BoundingBox(deckPosition.x - xOffset, deckPosition.x + xOffset,
                 deckPosition.y - yOffset, deckPosition.y + yOffset);
     }
