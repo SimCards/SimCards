@@ -31,4 +31,8 @@ public class Middleman {
     public static int getImageLocation(CardShape c) {
         return middleman.getImageLocation(c);
     }
+
+    public static int getFontLocation() {
+        return middleman.getFontLocation();
+    }
 }

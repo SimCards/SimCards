@@ -1,7 +1,5 @@
 package io.github.simcards.simcards.client.graphics;
 
-import android.content.res.Resources;
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -23,10 +21,6 @@ public class AndroidGraphicsUtil {
             byte[] buffer = new byte[input.available()];
             input.read(buffer);
             shaderCode = new String(buffer);
-        } catch (Resources.NotFoundException e) {
-            System.out.println("Shader resource not found.");
-            e.printStackTrace();
-            return -1;
         } catch (IOException e) {
             System.out.println("Error reading shader resource.");
             e.printStackTrace();

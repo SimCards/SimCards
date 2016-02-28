@@ -88,4 +88,9 @@ public class AndroidMiddleman implements IMiddleman {
         }
         return -1;
     }
+
+    @Override
+    public int getFontLocation() {
+        return R.drawable.font;
+    }
 }

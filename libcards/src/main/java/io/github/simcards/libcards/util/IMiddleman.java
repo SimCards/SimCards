@@ -13,4 +13,6 @@ public interface IMiddleman {
      * @return The location of the image representing the card.
      */
     int getImageLocation(CardShape c);
+
+    int getFontLocation();
 }

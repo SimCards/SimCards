@@ -18,6 +18,8 @@ public class DeckView {
     final int id;
     /** The grid position of the deck's base on the field. */
     private GridPosition gridPosition;
+    /** Text displaying the number of cards in the deck. */
+    private NumberHolder number;
 
     /**
      * Initializes a deck view.

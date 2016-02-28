@@ -96,38 +96,6 @@ public class MainActivity extends AppCompatActivity {
         String addr = intent.getStringExtra(MatchmakingActivity.PARAM_IP_ADDRESS);
 
         new Thread(new SocketThread(socket, addr, game)).start();
-
-//        List<Card> cards = new ArrayList<>();
-//        cards.add(new Card(Rank.ACE, Suit.SPADE));
-//        Deck deck = new Deck(cards, new GridPosition(), Visibility.FACE_DOWN);
-//        environment.addNewDeck(deck);
-//
-//        List<Card> cards2 = new ArrayList<>();
-//        cards2.add(new Card(Rank.ACE, Suit.HEART));
-//        Deck deck2 = new Deck(cards2, new GridPosition(1, 0), Visibility.FACE_UP);
-//        environment.addNewDeck(deck2);
-//
-//        List<Card> cards3 = new ArrayList<>();
-//        cards3.add(new Card(Rank.ACE, Suit.CLUB));
-//        Deck deck3 = new Deck(cards3, new GridPosition(-1, 0), Visibility.FACE_UP);
-//        environment.addNewDeck(deck3);
-//
-//        List<Card> cards4 = new ArrayList<>();
-//        cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
-//        Deck deck4 = new Deck(cards4, new GridPosition(0, 1), Visibility.FACE_UP);
-//        environment.addNewDeck(deck4);
-
-
-//        System.out.println("advanceState1");
-//        game.advanceState(1);
-//
-//        try { Thread.sleep(1000); } catch (InterruptedException e) {}
-//
-//        System.out.println("advanceState0");
-//        game.advanceState(0);
-//
-        // advanced war simulation
-
     }
 
     @Override

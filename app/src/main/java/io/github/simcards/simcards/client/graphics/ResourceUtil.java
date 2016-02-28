@@ -122,6 +122,7 @@ public class ResourceUtil {
             case R.drawable.two_of_diamonds: return "drawable/two_of_diamonds.png";
             case R.drawable.two_of_hearts: return "drawable/two_of_hearts.png";
             case R.drawable.two_of_spades: return "drawable/two_of_spades.png";
+            case R.drawable.font: return "drawable/font.png";
             case R.raw.default_frag: return "raw/default_frag.frag";
             case R.raw.default_vert: return "raw/default_vert.vert";
             default: return "";

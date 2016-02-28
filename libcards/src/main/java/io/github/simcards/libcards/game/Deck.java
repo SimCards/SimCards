@@ -158,8 +158,7 @@ public class Deck {
         // Process the deck touch.
         Card topCard = getTopCard();
         if (topCard != null) {
-            System.out.println(topCard.rank.ordinal());
-            System.out.println(topCard.suit.ordinal());
+            System.out.println(topCard.rank.ordinal() + " " + topCard.suit.ordinal());
         }
     }
 }
