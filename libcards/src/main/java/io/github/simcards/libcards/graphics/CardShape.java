@@ -3,6 +3,7 @@ package io.github.simcards.libcards.graphics;
 import io.github.simcards.libcards.game.Card;
 import io.github.simcards.libcards.util.BoundingBox;
 import io.github.simcards.libcards.util.Factory;
+import io.github.simcards.libcards.util.Matrix;
 import io.github.simcards.libcards.util.Middleman;
 import io.github.simcards.libcards.util.Position;
 
@@ -19,6 +20,8 @@ public class CardShape {
     private Shape shape;
     /** The position of the card on the field. */
     private Position position;
+    /** The rotation angle (in degrees) of the card. */
+    private float rotation;
 
     /** Whether the card is facing up, showing its type. */
     private boolean faceUp = true;
@@ -32,11 +35,13 @@ public class CardShape {
      * Adds a card shape to the renderer.
      * @param card The card that the shape is representing.
      * @param position The position of the card on the field.
+     * @param rotation The rotation angle (in degrees) of the card.
      */
-    public CardShape(Card card, Position position) {
+    public CardShape(Card card, Position position, float rotation) {
         id = card.id;
         this.card = card;
         this.position = position;
+        this.rotation = rotation;
         float halfCardWidth = CARD_WIDTH / 2;
         float halfCardHeight = CARD_HEIGHT / 2;
         float top = position.y + halfCardHeight;
@@ -61,11 +66,20 @@ public class CardShape {
                             0.0f, 1.0f,
                     };
         }
-        shape = new Shape(new float[]{
-                left, top, 0.0f,
-                left, bottom, 0.0f,
-                right, bottom, 0.0f,
-                right, top, 0.0f},
+        Position[] corners = new Position[4];
+        corners[0] = new Position(left, top);
+        corners[1] = new Position(left, bottom);
+        corners[2] = new Position(right, bottom);
+        corners[3] = new Position(right, top);
+        for (int i = 0; i < corners.length; i++) {
+            corners[i].rotate(rotation);
+        }
+        float[] vertices = new float[]{
+                corners[0].x, corners[0].y, 0.0f,
+                corners[1].x, corners[1].y, 0.0f,
+                corners[2].x, corners[2].y, 0.0f,
+                corners[3].x, corners[3].y, 0.0f};
+        shape = new Shape(vertices,
                 new short[]{0, 1, 2, 0, 2, 3},
                 textureCoordinates,
                 Middleman.getImageLocation(this));
@@ -129,7 +143,7 @@ public class CardShape {
         touchPosition.scale(GLRenderer.camera.scale / halfScreenHeight);
         touchPosition.addPosition(GLRenderer.camera.position);
         BoundingBox boundingBox = getBoundingBox();
-        return boundingBox.isInside(touchPosition);
+        return boundingBox.isInside(touchPosition, rotation);
     }
 
     /**

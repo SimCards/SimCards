@@ -1,6 +1,5 @@
 package io.github.simcards.simcards.client.desktop;
 
-
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.newt.opengl.GLWindow;
@@ -59,15 +58,16 @@ public class SimCardsDesktop {
 
         Environment environment = Environment.getEnvironment();
         List<Card> cards = new ArrayList<>();
-        cards.add(new Card(Rank.ACE, Suit.SPADE));
+        for (int i = 0 ; i < 52; i++) {
+        cards.add(new Card(Rank.ACE, Suit.SPADE));}
         Deck deck = new Deck(cards, new Visibility(Facing.FACE_DOWN, true, Arrangement.STACKED));
-        environment.addNewDeck(deck, new GridPosition());
+        environment.addNewDeck(deck, new GridPosition(), 45);
 
         List<Card> cards2 = new ArrayList<>();
         cards2.add(new Card(Rank.ACE, Suit.HEART));
         cards2.add(new Card(Rank.TWO, Suit.HEART));
         cards2.add(new Card(Rank.THREE, Suit.HEART));
-        Deck deck2 = new Deck(cards2, new Visibility(Facing.FACE_UP, false, Arrangement.HORIZONTAL));
+        Deck deck2 = new Deck(cards2, new Visibility(Facing.TOP_FACE_UP, false, Arrangement.HORIZONTAL));
         environment.addNewDeck(deck2, new GridPosition(1, 0));
 
         List<Card> cards3 = new ArrayList<>();

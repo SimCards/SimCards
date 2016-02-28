@@ -24,11 +24,11 @@ public class Position {
     }
 
     /**
-     * Initializes a position from a 4x4 matrix.
-     * @param matrix The matrix to initialize the position with.
+     * Initializes a position from a 4D vector.
+     * @param vector The vector to initialize the position with.
      */
-    public Position(float[] matrix) {
-        this(matrix[0], matrix[5]);
+    public Position(float[] vector) {
+        this(vector[0], vector[1]);
     }
 
     /**
@@ -103,14 +103,19 @@ public class Position {
     }
 
     /**
-     * Returns a 4x4 matrix representing the position.
-     * @return A 4x4 matrix representing the position.
+     * Gets a position that is the inverse of this position.
+     * @return The position that is the inverse of this position.
      */
-    public float[] convertToMatrix() {
-        return new float[]{x, 0, 0, 0,
-                           0, y, 0, 0,
-                           0, 0, 0, 0,
-                           0, 0, 0, 0};
+    public Position getInverse() {
+        return new Position(-x, -y);
+    }
+
+    /**
+     * Returns a 4D vector representing the position.
+     * @return A 4D vector representing the position.
+     */
+    public float[] convertToVector() {
+        return new float[]{x, y, 0, 1};
     }
 
     /**
@@ -119,6 +124,20 @@ public class Position {
      */
     public Position clone() {
         return new Position(x, y);
+    }
+
+    /**
+     * Rotates the position around an angle (in degrees).
+     * @param rotation The angle to rotate the position by.
+     */
+    public void rotate(float rotation) {
+        float[] rotationMatrix = new float[16];
+        Matrix.setRotateM(rotationMatrix, 0, rotation, 0, 0, 1);
+        float[] cornerVector = convertToVector();
+        float[] rotateResultVector = new float[4];
+        Matrix.multiplyMV(rotateResultVector, 0, rotationMatrix, 0, cornerVector, 0);
+        x = rotateResultVector[0];
+        y = rotateResultVector[1];
     }
 
     @Override

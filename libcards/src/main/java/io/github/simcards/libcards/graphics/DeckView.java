@@ -8,6 +8,7 @@ import io.github.simcards.libcards.game.Deck;
 import io.github.simcards.libcards.game.enums.Arrangement;
 import io.github.simcards.libcards.game.enums.Facing;
 import io.github.simcards.libcards.util.GridPosition;
+import io.github.simcards.libcards.util.Matrix;
 import io.github.simcards.libcards.util.Position;
 
 /**
@@ -26,6 +27,8 @@ public class DeckView {
     final int playerID = -1;
     /** The grid position of the deck's base on the field. */
     private GridPosition gridPosition;
+    /** The rotation angle of the deck. */
+    private float rotation;
     /** Text displaying the number of cards in the deck. */
     private NumberHolder number;
 
@@ -33,11 +36,13 @@ public class DeckView {
      * Initializes a deck view.
      * @param deck The deck represented by this view.
      * @param position The grid position of the deck on the field.
+     * @param rotation The rotation angle (in degrees) of the deck.
      */
-    public DeckView(Deck deck, GridPosition position) {
+    public DeckView(Deck deck, GridPosition position, float rotation) {
         this.deck = deck;
         id = deck.id;
         gridPosition = position;
+        this.rotation = rotation;
         redraw();
     }
 
@@ -51,11 +56,15 @@ public class DeckView {
         cardShapes.clear();
         int deckSize = deck.cards.size();
         Position currentPosition = gridPosition.getWorldPosition();
-        for (int i = 0; i < deckSize; i++) {
+        int i = 0;
+        if (deck.visibility.arrangement == Arrangement.STACKED) {
+            i = deckSize - 1;
+        }
+        for (; i < deckSize; i++) {
             Card card = deck.cards.get(i);
-            CardShape shape = new CardShape(card, currentPosition.clone());
+            CardShape shape = new CardShape(card, currentPosition.clone(), rotation);
             if (deck.visibility.facing == Facing.FACE_DOWN ||
-                    deck.visibility.facing == Facing.TOP_FACE_UP && i == deckSize - 1 ||
+                    deck.visibility.facing == Facing.TOP_FACE_UP && i < deckSize - 1 ||
                     deck.visibility.facing == Facing.OWNER && playerID != GameScreen.getScreen().playerID) {
                 shape.setFaceUp(false);
             } else {
@@ -75,9 +84,11 @@ public class DeckView {
                 number.remove();
             }
             if (deckSize > 0) {
-                currentPosition.addPosition(-CardShape.getCenterOffsetX() + NumberShape.NUMBER_WIDTH,
+                Position numberOffset = new Position(-CardShape.getCenterOffsetX() + NumberShape.NUMBER_WIDTH,
                         -CardShape.getCenterOffsetY() + NumberShape.NUMBER_HEIGHT);
-                number = new NumberHolder(deckSize, currentPosition);
+
+                currentPosition.addPosition(numberOffset);
+                number = new NumberHolder(deckSize, currentPosition, rotation);
                 number.render();
             }
         }

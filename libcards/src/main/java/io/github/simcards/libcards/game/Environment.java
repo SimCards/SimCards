@@ -41,9 +41,19 @@ public class Environment {
      * @param gridPosition The position of the deck.
      */
     public void addNewDeck(Deck deck, GridPosition gridPosition) {
+        addNewDeck(deck, gridPosition, 0);
+    }
+
+    /**
+     * Adds a deck to the environment.
+     * @param deck The deck to add to the environment.
+     * @param gridPosition The position of the deck.
+     * @param rotation The rotation angle (in degrees) of the deck.
+     */
+    public void addNewDeck(Deck deck, GridPosition gridPosition, float rotation) {
         decks.put(deck.id, deck);
         // TODO: Change to a packet.
-        GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition));
+        GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition, rotation));
     }
 
     /**
