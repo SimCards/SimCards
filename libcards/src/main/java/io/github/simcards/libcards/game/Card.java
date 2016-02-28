@@ -1,5 +1,8 @@
 package io.github.simcards.libcards.game;
 
+import io.github.simcards.libcards.game.enums.Rank;
+import io.github.simcards.libcards.game.enums.Suit;
+
 /**
  * A card to render on the screen.
  */

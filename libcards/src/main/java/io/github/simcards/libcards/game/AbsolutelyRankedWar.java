@@ -8,6 +8,9 @@ import org.zeromq.ZMQ;
 import java.util.List;
 import java.util.Vector;
 
+import io.github.simcards.libcards.game.enums.Facing;
+import io.github.simcards.libcards.game.enums.Rank;
+import io.github.simcards.libcards.game.enums.Suit;
 import io.github.simcards.libcards.network.MessageHandler;
 import io.github.simcards.libcards.network.ZeroMQSendThread;
 import io.github.simcards.libcards.util.TouchHandler;
@@ -45,11 +48,11 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
             deck2.add(cards.get(i+26));
         }
 
-        decks[0] = new Deck(deck1, Visibility.FACE_DOWN);
-        piles[0] = new Deck(new Vector<Card>(), Visibility.TOP_FACE_UP);
+        decks[0] = new Deck(deck1, new Visibility(Facing.FACE_DOWN));
+        piles[0] = new Deck(new Vector<Card>(), new Visibility(Facing.FACE_UP));
 
-        decks[1] = new Deck(deck2, Visibility.FACE_DOWN);
-        piles[1] = new Deck(new Vector<Card>(), Visibility.TOP_FACE_UP);
+        decks[1] = new Deck(deck2, new Visibility(Facing.FACE_DOWN));
+        piles[1] = new Deck(new Vector<Card>(), new Visibility(Facing.FACE_UP));
 
         Environment.getEnvironment().addNewDeck(decks[0], new GridPosition(0,-2));
         Environment.getEnvironment().addNewDeck(decks[1], new GridPosition(0, 2));
@@ -141,7 +144,8 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
         return v1 - v2;
     }
 
-    public void handleTouch(Deck deck) {
+    @Override
+    public void handleTouch(Deck deck, Card card) {
         System.out.println("Handling touch!");
         if (deck == decks[current_player]) {
             boolean finished = advanceState(current_player);

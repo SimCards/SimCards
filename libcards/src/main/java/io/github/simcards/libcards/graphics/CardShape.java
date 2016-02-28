@@ -1,6 +1,7 @@
 package io.github.simcards.libcards.graphics;
 
 import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.util.BoundingBox;
 import io.github.simcards.libcards.util.Factory;
 import io.github.simcards.libcards.util.Middleman;
 import io.github.simcards.libcards.util.Position;
@@ -16,6 +17,8 @@ public class CardShape {
     public Card card;
     /** The shape used to render the card. */
     private Shape shape;
+    /** The position of the card on the field. */
+    private Position position;
 
     /** Whether the card is facing up, showing its type. */
     private boolean faceUp = true;
@@ -33,6 +36,7 @@ public class CardShape {
     public CardShape(Card card, Position position) {
         id = card.id;
         this.card = card;
+        this.position = position;
         float halfCardWidth = CARD_WIDTH / 2;
         float halfCardHeight = CARD_HEIGHT / 2;
         float top = position.y + halfCardHeight;
@@ -109,5 +113,33 @@ public class CardShape {
      */
     public static float getCenterOffsetY() {
         return CARD_HEIGHT / 2;
+    }
+
+    /**
+     * Checks whether the deck is being touched.
+     * @param touchPosition The position where the screen was touched.
+     * @return Whether the deck is being touched.
+     */
+    boolean isTouched(Position touchPosition) {
+        // Convert the touch position to world coordinates.
+        float halfScreenHeight = GraphicsUtil.screenHeight / 2;
+        touchPosition = touchPosition.clone();
+        touchPosition.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
+        touchPosition.invertY();
+        touchPosition.scale(GLRenderer.camera.scale / halfScreenHeight);
+        touchPosition.addPosition(GLRenderer.camera.position);
+        BoundingBox boundingBox = getBoundingBox();
+        return boundingBox.isInside(touchPosition);
+    }
+
+    /**
+     * Gets the bounding box around the deck.
+     * @return The bounding box around the deck.
+     */
+    private BoundingBox getBoundingBox() {
+        float xOffset = CardShape.getCenterOffsetX();
+        float yOffset = CardShape.getCenterOffsetY();
+        return new BoundingBox(position.x - xOffset, position.x + xOffset,
+                position.y - yOffset, position.y + yOffset);
     }
 }
