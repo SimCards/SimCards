@@ -1,3 +1,4 @@
+#version 100
 precision mediump float;
 uniform vec4 vColor;
 uniform sampler2D uTexture;

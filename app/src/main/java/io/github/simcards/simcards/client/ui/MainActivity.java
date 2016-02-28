@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,21 +17,18 @@ import android.view.ScaleGestureDetector;
 
 import org.zeromq.ZMQ;
 
-import java.util.ArrayList;
-import java.util.List;
 
+import io.github.simcards.libcards.util.Factory;
 import io.github.simcards.simcards.R;
+import io.github.simcards.simcards.client.graphics.AndroidGLWrapper;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
-import io.github.simcards.simcards.client.graphics.GraphicsUtil;
-import io.github.simcards.simcards.client.network.SocketThread;
-import io.github.simcards.simcards.game.AbsolutelyRankedWar;
-import io.github.simcards.simcards.game.Card;
-import io.github.simcards.simcards.game.Deck;
-import io.github.simcards.simcards.game.Environment;
-import io.github.simcards.simcards.game.Rank;
-import io.github.simcards.simcards.game.Suit;
-import io.github.simcards.simcards.game.Visibility;
-import io.github.simcards.simcards.util.GridPosition;
+import io.github.simcards.libcards.graphics.GraphicsUtil;
+import io.github.simcards.simcards.client.graphics.ResourceUtil;
+import io.github.simcards.libcards.network.SocketThread;
+import io.github.simcards.libcards.game.AbsolutelyRankedWar;
+import io.github.simcards.libcards.game.Environment;
+import io.github.simcards.simcards.client.util.AndroidLogger;
+import io.github.simcards.simcards.client.util.AndroidMiddleman;
 
 /**
  * Main activity screen.
@@ -40,15 +36,20 @@ import io.github.simcards.simcards.util.GridPosition;
 public class MainActivity extends AppCompatActivity {
 
     /** Surface for rendering objects. */
-    private GLSurfaceView mGLView;
+    private GLSurfaceView glView;
 
     /** Listens for touch gestures. */
-    private GestureDetectorCompat mTouchDetector;
+    private GestureDetectorCompat touchDetector;
     /** Listens for zoom gestures. */
-    private ScaleGestureDetector mZoomDetector;
+    private ScaleGestureDetector zoomDetector;
 
+    /** The context that the activity is in. */
     private static Context ctx;
 
+    /**
+     * Gets the context that the activity is in.
+     * @return The context that the activity is in.
+     */
     public static Context getContext() {
         if (ctx == null) throw new IllegalStateException();
         return ctx;
@@ -57,12 +58,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ctx = this;
-
         System.out.println("Application started.");
-
-        GraphicsUtil.sResources = this.getResources();
+        Factory.init(new AndroidLogger(), new AndroidGLWrapper(), null, new AndroidMiddleman());
+        ResourceUtil.resources = this.getResources();
 
         // Get the Android screen size.
         Display display = getWindowManager().getDefaultDisplay();
@@ -73,11 +72,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
-        mGLView = new GLSurfaceViewWrapper(this);
-        setContentView(mGLView);
+        GLSurfaceViewWrapper glSurfaceViewWrapper = new GLSurfaceViewWrapper(this);
+        glView = glSurfaceViewWrapper;
+        Factory.setRerenderer(glSurfaceViewWrapper);
+        setContentView(glView);
 
-        mTouchDetector = new GestureDetectorCompat(this, new TouchListener());
-        mZoomDetector = new ScaleGestureDetector(this, new ZoomListener());
+        touchDetector = new GestureDetectorCompat(this, new TouchListener());
+        zoomDetector = new ScaleGestureDetector(this, new ZoomListener());
 
         Environment environment = Environment.getEnvironment();
 
@@ -95,23 +96,12 @@ public class MainActivity extends AppCompatActivity {
         String addr = intent.getStringExtra(MatchmakingActivity.PARAM_IP_ADDRESS);
 
         new Thread(new SocketThread(socket, addr, game)).start();
-
-//        System.out.println("advanceState1");
-//        game.advanceState(1);
-//
-//        try { Thread.sleep(1000); } catch (InterruptedException e) {}
-//
-//        System.out.println("advanceState0");
-//        game.advanceState(0);
-//
-        // advanced war simulation
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mZoomDetector.onTouchEvent(event);
-        mTouchDetector.onTouchEvent(event);
+        zoomDetector.onTouchEvent(event);
+        touchDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
