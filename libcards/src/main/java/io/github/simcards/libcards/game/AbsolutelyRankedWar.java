@@ -49,10 +49,10 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
         }
 
         decks[0] = new Deck(deck1, new Visibility(Facing.FACE_DOWN));
-        piles[0] = new Deck(new Vector<Card>(), new Visibility(Facing.TOP_FACE_UP));
+        piles[0] = new Deck(new Vector<Card>(), new Visibility(Facing.FACE_UP));
 
         decks[1] = new Deck(deck2, new Visibility(Facing.FACE_DOWN));
-        piles[1] = new Deck(new Vector<Card>(), new Visibility(Facing.TOP_FACE_UP));
+        piles[1] = new Deck(new Vector<Card>(), new Visibility(Facing.FACE_UP));
 
         Environment.getEnvironment().addNewDeck(decks[0], new GridPosition(0,-2));
         Environment.getEnvironment().addNewDeck(decks[1], new GridPosition(0, 2));

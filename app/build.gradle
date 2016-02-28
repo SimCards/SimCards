@@ -25,9 +25,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'org.zeromq:jeromq:0.3.5'
-    compile files('src/libs/gluegen-rt.jar')
-    compile files('src/libs/gluegen-rt-natives-macosx-universal.jar')
-    compile files('src/libs/jogl-all.jar')
-    compile files('src/libs/jogl-all-natives-macosx-universal.jar')
     compile project(':libcards')
 }
