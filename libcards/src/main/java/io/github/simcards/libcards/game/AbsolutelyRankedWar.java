@@ -147,6 +147,9 @@ public class AbsolutelyRankedWar implements TouchHandler, MessageHandler {
     @Override
     public void handleTouch(Deck deck, Card card) {
         System.out.println("Handling touch!");
+        if (decks == null) {
+            return;
+        }
         if (deck == decks[current_player]) {
             boolean finished = advanceState(current_player);
             if (finished) {

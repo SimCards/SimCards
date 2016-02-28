@@ -57,7 +57,7 @@ public class DeckView {
         int deckSize = deck.cards.size();
         Position currentPosition = gridPosition.getWorldPosition();
         int i = 0;
-        if (deck.visibility.arrangement == Arrangement.STACKED) {
+        if (deck.visibility.arrangement == Arrangement.STACKED && !deck.cards.isEmpty()) {
             i = deckSize - 1;
         }
         for (; i < deckSize; i++) {
