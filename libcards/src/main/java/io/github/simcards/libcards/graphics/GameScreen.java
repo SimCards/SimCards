@@ -13,8 +13,9 @@ public class GameScreen {
 
     /** The decks on the field. */
     private Map<Integer, DeckView> decks = new HashMap<>();
-    /** The cards on the field. */
-    private Map<Integer, CardShape> cards = new HashMap<>();
+
+    /** The ID of the client player in the game. */
+    public int playerID;
 
     /** The singleton instance of the screen. */
     private static GameScreen gameScreen = new GameScreen();
@@ -60,42 +61,16 @@ public class GameScreen {
     }
 
     /**
-     * Adds a card to the screen.
-     * @param card The card to add to the screen.
-     */
-    public void addCard(CardShape card) {
-        cards.put(card.id, card);
-    }
-
-    /**
-     * Gets a card from its ID.
-     * @param id The ID of the card.
-     * @return The card with the specified ID.
-     */
-    public CardShape getCard(int id) {
-        return cards.get(id);
-    }
-
-    /**
-     * Removes a card from the screen.
-     * @param id The card to remove from the screen.
-     */
-    public void removeCard(int id) {
-        CardShape card = cards.remove(id);
-        if (card != null) {
-            card.removeShape();
-        }
-    }
-
-    /**
      * Acts upon the decks on the screen when a touch event occurs.
      * @param position The position where the touch event occurred.
      */
     public void touch(Position position) {
         for (DeckView deck : decks.values()) {
-            if (deck.isTouched(position)) {
+            int cardTouched = deck.getTouched(position);
+            if (cardTouched != -1) {
                 // TODO: Change to a packet.
-                Environment.getEnvironment().touchDeck(deck.id);
+                Environment.getEnvironment().touchDeck(deck.id, cardTouched);
+                return;
             }
         }
     }

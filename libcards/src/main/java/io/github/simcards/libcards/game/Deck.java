@@ -3,6 +3,8 @@ package io.github.simcards.libcards.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.simcards.libcards.game.enums.Rank;
+import io.github.simcards.libcards.game.enums.Suit;
 import io.github.simcards.libcards.graphics.GameScreen;
 import io.github.simcards.libcards.util.RandomUtil;
 
@@ -15,7 +17,7 @@ public class Deck {
     public final int id;
     /** The cards in the deck. */
     public List<Card> cards;
-    /** The visibility of the cards in the deck. */
+    /** The visibility settings of the cards in the deck. */
     public Visibility visibility;
 
     /** Counter used to assign unique deck IDs. */
@@ -24,7 +26,7 @@ public class Deck {
     /**
      * Creates a deck of cards.
      * @param cards The cards initially in the deck.
-     * @param visibility The visibility of the deck.
+     * @param visibility The visibility settings of the deck.
      */
     public Deck(List<Card> cards, Visibility visibility) {
         this.id = idCounter++;
@@ -41,7 +43,7 @@ public class Deck {
         boolean success = cards.add(card);
         if (success) {
             // TODO: Change to a packet.
-            GameScreen.getScreen().getDeck(id).addElement(card);
+            GameScreen.getScreen().getDeck(id).redraw();
         }
         return success;
     }
@@ -66,7 +68,7 @@ public class Deck {
         } else if (cardIndex > 0) {
             cards.remove(card);
             // TODO: Change to a packet.
-            GameScreen.getScreen().getDeck(id).remove(card);
+            GameScreen.getScreen().getDeck(id).redraw();
             return card;
         } else {
             return null;
@@ -109,7 +111,7 @@ public class Deck {
             return null;
         } else {
             Card topCard = cards.remove(cards.size() - 1);
-            GameScreen.getScreen().getDeck(id).pop(topCard);
+            GameScreen.getScreen().getDeck(id).redraw();
             return topCard;
         }
     }
@@ -159,6 +161,7 @@ public class Deck {
         Card topCard = getTopCard();
         if (topCard != null) {
             System.out.println(topCard.rank.ordinal() + " " + topCard.suit.ordinal());
+            pop();
         }
     }
 }

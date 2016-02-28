@@ -1,4 +1,4 @@
-package io.github.simcards.libcards.game;
+package io.github.simcards.libcards.game.enums;
 
 /**
  * Represents a card rank.
