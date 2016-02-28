@@ -16,6 +16,15 @@
             <option value="$PROJECT_DIR$/misc" />
           </set>
         </option>
+        <option name="myModules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/desktop" />
+            <option value="$PROJECT_DIR$/libcards" />
+            <option value="$PROJECT_DIR$/misc" />
+          </set>
+        </option>
       </GradleProjectSettings>
     </option>
   </component>

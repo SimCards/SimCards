@@ -89,10 +89,10 @@ public class Environment {
                 selectedCard = card;
             }
         }
+        deck.touch();
         if (touchHandler != null && selectedCard != null) {
             touchHandler.handleTouch(deck, selectedCard);
         }
-        deck.touch();
     }
 
     /**

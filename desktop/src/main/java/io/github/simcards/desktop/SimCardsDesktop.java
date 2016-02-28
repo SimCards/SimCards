@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.simcards.libcards.game.AbsolutelyRankedWar;
+import io.github.simcards.libcards.game.enums.Arrangement;
+import io.github.simcards.libcards.game.enums.Facing;
 import io.github.simcards.libcards.graphics.GLRenderer;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.libcards.game.Card;
@@ -57,8 +59,8 @@ public class SimCardsDesktop {
         glWindow.setSize(GraphicsUtil.screenWidth, GraphicsUtil.screenHeight);
         glWindow.setVisible(true);
         animator.start();
-
         Environment environment = Environment.getEnvironment();
+        //initializeTestEnvironment();
 
         ZMQ.Context ctx = ZMQ.context(1);
         ZMQ.Socket socket = ctx.socket(ZMQ.PAIR);
@@ -69,6 +71,37 @@ public class SimCardsDesktop {
         String addr = "127.0.0.1";
 
         new Thread(new SocketThread(socket, addr, game)).start();
+    }
+
+    /**
+     * Initializes a test play field for UI testing.
+     */
+    private static void initializeTestEnvironment() {
+        Environment environment = Environment.getEnvironment();
+        List<Card> cards = new ArrayList<>();
+        for (int i = 0 ; i < 52; i++) {
+            cards.add(new Card(Rank.ACE, Suit.SPADE));}
+        Deck deck = new Deck(cards, new Visibility(Facing.FACE_DOWN, true, Arrangement.STACKED));
+        environment.addNewDeck(deck, new GridPosition(), 45);
+
+        List<Card> cards2 = new ArrayList<>();
+        cards2.add(new Card(Rank.ACE, Suit.HEART));
+        cards2.add(new Card(Rank.TWO, Suit.HEART));
+        cards2.add(new Card(Rank.THREE, Suit.HEART));
+        Deck deck2 = new Deck(cards2, new Visibility(Facing.TOP_FACE_UP, false, Arrangement.HORIZONTAL));
+        environment.addNewDeck(deck2, new GridPosition(1, 0));
+
+        List<Card> cards3 = new ArrayList<>();
+        cards3.add(new Card(Rank.ACE, Suit.CLUB));
+        cards3.add(new Card(Rank.TWO, Suit.CLUB));
+        cards3.add(new Card(Rank.THREE, Suit.CLUB));
+        Deck deck3 = new Deck(cards3, new Visibility(Facing.FACE_UP, false, Arrangement.VERTICAL));
+        environment.addNewDeck(deck3, new GridPosition(-1, 0));
+
+        List<Card> cards4 = new ArrayList<>();
+        cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
+        Deck deck4 = new Deck(cards4, new Visibility(Facing.FACE_UP));
+        environment.addNewDeck(deck4, new GridPosition(0, 1));
     }
 
     /**

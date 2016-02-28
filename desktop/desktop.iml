@@ -56,6 +56,5 @@
     <orderEntry type="library" exported="" name="gluegen-rt-2.3.2-natives-windows-amd64" level="project" />
     <orderEntry type="library" exported="" name="gluegen-rt-2.3.2-natives-windows-i586" level="project" />
     <orderEntry type="library" exported="" name="json-20151123" level="project" />
-    <orderEntry type="library" exported="" name="desktop.desktop" level="project" />
   </component>
 </module>
