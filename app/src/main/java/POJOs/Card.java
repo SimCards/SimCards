@@ -5,11 +5,11 @@ package POJOs;
  */
 public class Card {
     private final Suit suit;
-    private final Rank value;
+    private final Rank rank;
 
-    public Card(Suit su, Rank val) {
-        this.suit = su;
-        this.value = val;
+    public Card(Rank rank, Suit suit) {
+        this.suit = suit;
+        this.rank = rank;
     }
 
     public Suit getSuit() {
@@ -17,6 +17,6 @@ public class Card {
     }
 
     public Rank getValue() {
-        return value;
+        return rank;
     }
 }
