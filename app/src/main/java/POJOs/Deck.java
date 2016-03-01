@@ -249,12 +249,11 @@ public class Deck {
         return (List<Card>) cards.clone();
     }
     //TO-DO: Implement this method
-    public List<Card> removeBulk(int num_cards, boolean top) {
-        List<Card> temp = new ArrayList<Card>();
-        if(top) {
-
-        }
-    }
+    //public List<Card> removeBulk(int num_cards, boolean top) {
+    //    List<Card> temp = new ArrayList<Card>();
+    //    if(top) {
+    //    }
+    //}
 
     public void insert(int index, Card card) {
         cards.add(index, card);
