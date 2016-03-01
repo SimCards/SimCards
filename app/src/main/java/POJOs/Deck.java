@@ -219,7 +219,7 @@ public class Deck {
     }
 
     public Card getTop() {
-        return cards.get(cards.size()-1);
+        return cards.get(cards.size() - 1);
     }
 
     public Card getBottom() {
@@ -248,7 +248,7 @@ public class Deck {
     public List<Card> getAll() {
         return (List<Card>) cards.clone();
     }
-
+    //TO-DO: Implement this method
     public List<Card> removeBulk(int num_cards, boolean top) {
         List<Card> temp = new ArrayList<Card>();
         if(top) {
@@ -257,7 +257,7 @@ public class Deck {
     }
 
     public void insert(int index, Card card) {
-        cards.add(index,card);
+        cards.add(index, card);
     }
 
     public void insert(int index, List<Card> cards) {
@@ -265,18 +265,36 @@ public class Deck {
     }
 
     public int size() {
-
+        return size;
     }
 
     public int countRank(Rank rank) {
-
+        int counter = 0;
+        for (int i=0;i<size;i++) {
+            if (cards.get(i).getRank().equals(rank)) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     public int countSuit(Suit suit) {
-
+        int counter = 0;
+        for (int i=0;i<size;i++) {
+            if (cards.get(i).getSuit().equals(suit)) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     public int countRankSuit(Rank rank, Suit suit) {
-
+        int counter = 0;
+        for (int i=0;i<size;i++) {
+            if (cards.get(i).getRank().equals(rank) && cards.get(i).getSuit().equals(suit)) {
+                counter++;
+            }
+        }
+        return counter;
     }
 }
