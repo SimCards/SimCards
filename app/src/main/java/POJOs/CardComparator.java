@@ -1,7 +1,14 @@
 package POJOs;
 
+import java.util.Comparator;
+
 /**
- * Created by Patrick on 2/26/2016.
+ * Created by Patrick on 3/1/2016.
  */
-public class CardComparator {
+public interface CardComparator extends Comparator<Card> {
+    @Override
+    int compare(Card lhs, Card rhs);
+
+    @Override
+    boolean equals(Object object);
 }

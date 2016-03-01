@@ -12,6 +12,7 @@ public class Deck {
     private ArrayList<Card> cards;
     private int size;
     private CardComparator comp;
+    private CardEvaluator eval;
 
     private Deck() {
         this.cards = new ArrayList<Card>();
@@ -185,17 +186,20 @@ public class Deck {
     public void setComparator(CardComparator comp) {
         this.comp = comp;
     }
-
+    /*
+    * Orders the deck using the currently set comparator. If no comparator has been set, no ordering
+    * will be applied
+    **/
     public void order() {
-
+        Collections.sort(cards,comp);
     }
 
     public void order(CardComparator comp) {
-
+        Collections.sort(cards,comp);
     }
 
     public void setEvaluator(CardEvaluator eval) {
-
+        this.eval = eval;
     }
 
     public int pointValue() {
@@ -215,43 +219,49 @@ public class Deck {
     }
 
     public Card getTop() {
-
+        return cards.get(cards.size()-1);
     }
 
     public Card getBottom() {
-
+        return cards.get(0);
     }
 
     public Card removeTop() {
-
+        return cards.remove(cards.size() - 1);
     }
 
     public Card removeBottom() {
-
+        return cards.remove(0);
     }
 
     public Card get(int index) {
-
+        return cards.get(index);
     }
 
     public Card remove(int index) {
-
+        return cards.remove(index);
     }
 
-    public List<Card> getBulk(int num_cards) {
-
+    /*
+    Returns a copy of the decks card list
+    **/
+    public List<Card> getAll() {
+        return (List<Card>) cards.clone();
     }
 
-    public List<Card> removeBulk(int num_cards) {
+    public List<Card> removeBulk(int num_cards, boolean top) {
+        List<Card> temp = new ArrayList<Card>();
+        if(top) {
 
+        }
     }
 
     public void insert(int index, Card card) {
-
+        cards.add(index,card);
     }
 
     public void insert(int index, List<Card> cards) {
-
+        cards.addAll(index,cards);
     }
 
     public int size() {
