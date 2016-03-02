@@ -203,19 +203,39 @@ public class Deck {
     }
 
     public int pointValue() {
-
+		int tot = 0;
+		for (int x = 0; x < cards.size(); x++) {
+			tot += eval.value(cards.get(x));
+		}
+		return tot;
     }
 
     public int pointValue(CardEvaluator eval) {
-
+		int tot = 0;
+		for (int x = 0; x < cards.size(); x++) {
+			tot += eval.value(cards.get(x));
+		}
+		return tot;
     }
 
     public Card getMax() {
-
+		int index = 0;
+		for (int x = 1; x < cards.size(); x++) {
+			if (comp.compare(cards.get(0), cards.get(x)) < 0) {
+				index = x;
+			}
+		}
+		return cards.get(index);
     }
 
     public Card getMin() {
-
+		int index = 0;
+		for (int x = 1; x < cards.size(); x++) {
+			if (comp.compare(cards.get(0), cards.get(x)) > 0) {
+				index = x;
+			}
+		}
+		return cards.get(index);
     }
 
     public Card getTop() {

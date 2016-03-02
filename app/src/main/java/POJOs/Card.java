@@ -19,4 +19,16 @@ public class Card {
     public Rank getRank() {
         return rank;
     }
+	
+	public int hashCode() {
+		return (suit.ordinal()+","+rank.ordinal()).hashCode();
+	}
+	
+	public boolean equals(Object c) {
+		return equals((Card)c);
+	}
+	
+	public boolean equals(Card c) {
+		return suit==c.getSuit() && rank==c.getRank();
+	}
 }
