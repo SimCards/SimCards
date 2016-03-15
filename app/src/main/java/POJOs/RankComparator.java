@@ -5,7 +5,7 @@ import java.util.Comparator;
 /**
  * Created by Patrick on 2/26/2016.
  */
-public class RankComparator implements CardComparator {
+public class RankComparator {
     /*
     Returns 1 if the first argument is greater than the second, -1 if the second is greater than
     the first and returns 0 if the 2 cards are equal

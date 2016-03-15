@@ -20,6 +20,50 @@ public class Deck {
     }
 
     /**
+     * Takes in a card and adds it to the top of the deck (index size)
+     * @param card
+     */
+    public void addTop(Card card) {
+        this.cards.add(card);
+        this.size++;
+    }
+
+    /**
+     * Takes in a card and adds it to the bottom of the deck (index 0)
+     * @param card
+     */
+    public void addBottom(Card card) {
+        this.cards.add(0,card);
+        this.size++;
+    }
+
+    public Card removeTop() {
+        this.size--;
+        if (size > -1) {
+            return cards.remove(cards.size());
+        } else {
+            return null;
+        }
+    }
+
+    public Card removeBottom() {
+        this.size--;
+        if (size > -1) {
+            return cards.remove(0);
+        } else {
+            return null;
+        }
+    }
+
+    public Card get(int index) {
+        return cards.get(index);
+    }
+
+    public Card remove(int index) {
+        return cards.remove(index);
+    }
+
+    /**
      * Transfers num_cards cards from this deck to the one specified by dst.
      * Where within the deck the cards are taken from and inserted are determined
      * by the manner parameter. There is currently no default behavior.
@@ -33,49 +77,64 @@ public class Deck {
         int i;
         if (num_cards < 1 || dst==null || manner==null){return;}
         switch(manner) {
+
             case TOP_TO_TOP:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(cards.remove(cards.size()-(num_cards)));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addTop(cards.remove(cards.size() - (num_cards)));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
                 break;
+
             case BOTTOM_TO_BOTTOM:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(0,cards.remove((num_cards-1)-i));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addBottom(cards.remove((num_cards - 1) - i));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
+                break;
+
             case BOTTOM_TO_BOTTOM_REVERSE:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(0,cards.remove(0));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addBottom(cards.remove(0));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
                 break;
+
             case BOTTOM_TO_TOP:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(cards.remove((num_cards-1)-i));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addTop(cards.remove((num_cards - 1) - i));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
                 break;
+
             case TOP_TO_BOTTOM:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(0,cards.remove(cards.size()-num_cards));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addBottom(cards.remove(cards.size()-num_cards));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
                 break;
+
             case TOP_TO_TOP_REVERSE:
-                for(i=0;i<num_cards;i++) {
-                    dst.cards.add(cards.remove(cards.size()-1));
+
+                for(i=0;i<num_cards && i < size;i++) {
+                    dst.addTop(cards.remove(cards.size()-1));
                 }
-                dst.size = dst.cards.size();
-                this.size = cards.size();
+
                 break;
+
             default:
                 break;
+        }
+
+        //Resize based on the number of cards that were moved
+        if (size < num_cards) {
+            size = 0;
+        } else {
+            size-= num_cards;
         }
     }
 
@@ -102,30 +161,27 @@ public class Deck {
     public static Deck initialize(boolean shuffled, DeckType type) {
         Deck newDeck = new Deck();
         int i,j;
+
         switch (type) {
             case EMPTY:
-                break;
-            case STANDARD_52:
-                for(i=0;i<4;i++) {
-                    for(j=0;j<13;i++) {
-                        newDeck.cards.add(new Card(Rank.values()[j],Suit.values()[i]));
-                    }
-                }
-                newDeck.size = newDeck.cards.size();
-                break;
+                return newDeck;
             case WITH_JOKERS:
-                for(i=0;i<4;i++) {
-                    for(j=0;j<13;i++) {
-                        newDeck.cards.add(new Card(Rank.values()[j],Suit.values()[i]));
-                    }
-                }
                 newDeck.cards.add(new Card(Rank.JOKER,Suit.JOKER));
                 newDeck.cards.add(new Card(Rank.JOKER,Suit.JOKER));
-                newDeck.size = newDeck.cards.size();
                 break;
             default:
                 break;
         }
+
+        Rank[] rArray = Rank.values();
+        Suit[] sArray = Suit.values();
+        for(i=0;i<4;i++) {
+            for(j=0;j<13;j++) {
+                Card temp = new Card(rArray[j],sArray[i]);
+                newDeck.cards.add(temp);
+            }
+        }
+        newDeck.size = newDeck.cards.size();
         if (shuffled) {
             newDeck.shuffle();
         }
@@ -238,30 +294,6 @@ public class Deck {
 		return cards.get(index);
     }
 
-    public Card getTop() {
-        return cards.get(cards.size() - 1);
-    }
-
-    public Card getBottom() {
-        return cards.get(0);
-    }
-
-    public Card removeTop() {
-        return cards.remove(cards.size() - 1);
-    }
-
-    public Card removeBottom() {
-        return cards.remove(0);
-    }
-
-    public Card get(int index) {
-        return cards.get(index);
-    }
-
-    public Card remove(int index) {
-        return cards.remove(index);
-    }
-
     /*
     Returns a copy of the decks card list
     **/
@@ -280,7 +312,7 @@ public class Deck {
     }
 
     public void insert(int index, List<Card> cards) {
-        cards.addAll(index,cards);
+        cards.addAll(index, cards);
     }
 
     public int size() {
@@ -315,5 +347,19 @@ public class Deck {
             }
         }
         return counter;
+    }
+
+    /************************************
+     * DEBUGGING METHODS
+     *********************************/
+
+    @Override
+    public String toString() {
+        String out = "";
+        for (int i =0; i < size; i++) {
+            Card temp = cards.get(i);
+            out = out.concat("\n" + i + " : " + temp.getRank().toString() + " of " + temp.getSuit().toString());
+        }
+        return out;
     }
 }
