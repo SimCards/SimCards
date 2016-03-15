@@ -40,7 +40,7 @@ public class Deck {
     public Card removeTop() {
         this.size--;
         if (size > -1) {
-            return cards.remove(cards.size());
+            return cards.remove(size);
         } else {
             return null;
         }
@@ -60,6 +60,7 @@ public class Deck {
     }
 
     public Card remove(int index) {
+        size--;
         return cards.remove(index);
     }
 
@@ -76,11 +77,12 @@ public class Deck {
     public void transfer(Deck dst, int num_cards, TransferManner manner) {
         int i;
         if (num_cards < 1 || dst==null || manner==null){return;}
+        if (this.size() < num_cards) { num_cards = size; }
         switch(manner) {
 
             case TOP_TO_TOP:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addTop(cards.remove(cards.size() - (num_cards)));
                 }
 
@@ -88,7 +90,7 @@ public class Deck {
 
             case BOTTOM_TO_BOTTOM:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addBottom(cards.remove((num_cards - 1) - i));
                 }
 
@@ -96,7 +98,7 @@ public class Deck {
 
             case BOTTOM_TO_BOTTOM_REVERSE:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addBottom(cards.remove(0));
                 }
 
@@ -104,7 +106,7 @@ public class Deck {
 
             case BOTTOM_TO_TOP:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addTop(cards.remove((num_cards - 1) - i));
                 }
 
@@ -112,7 +114,7 @@ public class Deck {
 
             case TOP_TO_BOTTOM:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addBottom(cards.remove(cards.size()-num_cards));
                 }
 
@@ -120,7 +122,7 @@ public class Deck {
 
             case TOP_TO_TOP_REVERSE:
 
-                for(i=0;i<num_cards && i < size;i++) {
+                for(i=0;i<num_cards;i++) {
                     dst.addTop(cards.remove(cards.size()-1));
                 }
 
@@ -131,7 +133,7 @@ public class Deck {
         }
 
         //Resize based on the number of cards that were moved
-        if (size < num_cards) {
+        if (size <= num_cards) {
             size = 0;
         } else {
             size-= num_cards;
@@ -139,16 +141,19 @@ public class Deck {
     }
 
 
+    /**
+     * Transfers a card from the given index in this deck to dst. If top is set to true
+     * the card will be transfered to the top of the dst deck and otherwise to the bottom
+     * @param dst
+     * @param index
+     * @param top
+     */
     public void transferIndex(Deck dst, int index, boolean top) {
-        if (index > cards.size()-1) {return;}
+        if (index > size-1) {return;}
         if (top) {
-            dst.cards.add(cards.remove(index));
-            dst.size = dst.cards.size();
-            this.size = cards.size();
+            dst.addTop(this.remove(index));
         } else {
-            dst.cards.add(0,cards.remove(index));
-            dst.size = dst.cards.size();
-            this.size = cards.size();
+            dst.addBottom(this.remove(index));
         }
     }
 
@@ -166,8 +171,8 @@ public class Deck {
             case EMPTY:
                 return newDeck;
             case WITH_JOKERS:
-                newDeck.cards.add(new Card(Rank.JOKER,Suit.JOKER));
-                newDeck.cards.add(new Card(Rank.JOKER,Suit.JOKER));
+                newDeck.addTop(new Card(Rank.JOKER,Suit.JOKER));
+                newDeck.addTop(new Card(Rank.JOKER,Suit.JOKER));
                 break;
             default:
                 break;
@@ -178,10 +183,10 @@ public class Deck {
         for(i=0;i<4;i++) {
             for(j=0;j<13;j++) {
                 Card temp = new Card(rArray[j],sArray[i]);
-                newDeck.cards.add(temp);
+                newDeck.addTop(temp);
             }
         }
-        newDeck.size = newDeck.cards.size();
+
         if (shuffled) {
             newDeck.shuffle();
         }
@@ -202,37 +207,48 @@ public class Deck {
         Collections.reverse(cards);
     }
 
-    public static Deck merge(Deck d1, Deck d2, TransferManner manner) {
-        if (d1 == null || d2 == null || manner == null) {return null;}
+    public static Deck merge(Deck d1, Deck d2, boolean shuffle) {
+        if (d1 == null || d2 == null) {return null;}
         Deck newDeck = new Deck();
-        newDeck.cards.addAll(d1.cards);
-        newDeck.cards.addAll(d2.cards);
+        newDeck.cards.addAll((List<Card>)d1.getAll());
+        newDeck.cards.addAll((List<Card>)d2.getAll());
+        newDeck.size = newDeck.cards.size();
+
+        if (shuffle) {
+            newDeck.shuffle();
+        }
         return newDeck;
     }
 
     public Deck[] distribute(int num_decks, int cards_per_deck, RemainderStrategy strat, DealDirection direction) {
         Deck[] decks = new Deck[num_decks];
+        for (int n=0; n < num_decks; n++) {
+            decks[n] = Deck.initialize(false, DeckType.EMPTY);
+        }
+        if (cards_per_deck*num_decks > size) {
+            cards_per_deck = (size - (size%num_decks)) / num_decks;
+        }
         if (direction == DealDirection.CLOCKWISE) {
-            while (cards.size() >= num_decks) {
+            for (int j=0; j < cards_per_deck; j++) {
                 for (int i = 0; i < num_decks; i++) {
-                    decks[i].cards.add(cards.remove(0));
+                    decks[i].addTop(this.removeTop());
                 }
             }
         } else {
-            while (cards.size() >= num_decks) {
-                for (int i = num_decks-1; i>=0; i++) {
-                    decks[i].cards.add(cards.remove(0));
+            for (int j=0; j < cards_per_deck; j++) {
+                for (int i = num_decks-1; i>=0; i--) {
+                    decks[i].addTop(this.removeTop());
                 }
             }
         }
         if (strat == RemainderStrategy.DISTRIBUTE_REMAINDERS) {
             if (direction == DealDirection.CLOCKWISE) {
-                for (int i = 0; i < num_decks && cards.size()>0; i++) {
-                    decks[i].cards.add(cards.remove(0));
+                for (int i = 0; i < num_decks && size>0; i++) {
+                    decks[i].addTop(this.removeTop());
                 }
             } else {
-                for (int i = num_decks-1; i>=0 && cards.size()>0; i++) {
-                    decks[i].cards.add(cards.remove(0));
+                for (int i = num_decks-1; i>=0 && size>0; i--) {
+                    decks[i].addTop(this.removeTop());
                 }
             }
         }
@@ -298,7 +314,7 @@ public class Deck {
     Returns a copy of the decks card list
     **/
     public List<Card> getAll() {
-        return (List<Card>) cards.clone();
+        return cards.subList(0,size);
     }
     //TO-DO: Implement this method
     //public List<Card> removeBulk(int num_cards, boolean top) {
@@ -309,14 +325,16 @@ public class Deck {
 
     public void insert(int index, Card card) {
         cards.add(index, card);
+        size++;
     }
 
     public void insert(int index, List<Card> cards) {
         cards.addAll(index, cards);
+        size = cards.size();
     }
 
     public int size() {
-        return size;
+        return this.size;
     }
 
     public int countRank(Rank rank) {
@@ -362,4 +380,5 @@ public class Deck {
         }
         return out;
     }
+
 }
