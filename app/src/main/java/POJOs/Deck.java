@@ -38,28 +38,24 @@ public class Deck {
     }
 
     public Card removeTop() {
+        if (size == 0) {return null;}
         this.size--;
-        if (size > -1) {
-            return cards.remove(size);
-        } else {
-            return null;
-        }
+        return cards.remove(size);
     }
 
     public Card removeBottom() {
+        if (size == 0) {return null;}
         this.size--;
-        if (size > -1) {
-            return cards.remove(0);
-        } else {
-            return null;
-        }
+        return cards.remove(0);
     }
 
     public Card get(int index) {
+        if (index >= size) {return null;}
         return cards.get(index);
     }
 
     public Card remove(int index) {
+        if (index >= size) {return null;}
         size--;
         return cards.remove(index);
     }
@@ -171,8 +167,8 @@ public class Deck {
             case EMPTY:
                 return newDeck;
             case WITH_JOKERS:
-                newDeck.addTop(new Card(Rank.JOKER,Suit.JOKER));
-                newDeck.addTop(new Card(Rank.JOKER,Suit.JOKER));
+                newDeck.addTop(new Card(Rank.JOKER, Suit.JOKER));
+                newDeck.addTop(new Card(Rank.JOKER, Suit.JOKER));
                 break;
             default:
                 break;
@@ -324,11 +320,13 @@ public class Deck {
     //}
 
     public void insert(int index, Card card) {
+        if (index > size) { index = size; }
         cards.add(index, card);
         size++;
     }
 
     public void insert(int index, List<Card> cards) {
+        if (index > size) { index = size; }
         cards.addAll(index, cards);
         size = cards.size();
     }
