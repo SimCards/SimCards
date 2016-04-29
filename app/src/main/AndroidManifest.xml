@@ -33,7 +33,10 @@
         <activity
             android:name=".client.ui.MatchmakingActivity"
             android:label="@string/title_activity_matchmaking"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".client.ui.LibraryActivity" />
+        <activity android:name=".client.ui.GameInfoActivity" />
+        <activity android:name=".client.ui.SearchActivity"></activity>
     </application>
 
 </manifest>

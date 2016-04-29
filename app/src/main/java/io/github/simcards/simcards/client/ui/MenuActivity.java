@@ -40,7 +40,8 @@ public class MenuActivity extends AppCompatActivity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MenuActivity.this, "share functionality coming soon!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MenuActivity.this, LibraryActivity.class);
+                startActivity(intent);
             }
         });
     }
