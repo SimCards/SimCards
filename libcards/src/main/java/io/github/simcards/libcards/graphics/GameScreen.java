@@ -80,7 +80,11 @@ public class GameScreen {
      * @return The deck removed from the environment.
      */
     public DeckView removeDeck(int id) {
-        return decks.remove(id);
+        DeckView removedDeck = decks.remove(id);
+        if (removedDeck != null) {
+            removedDeck.remove();
+        }
+        return removedDeck;
     }
 
     /**

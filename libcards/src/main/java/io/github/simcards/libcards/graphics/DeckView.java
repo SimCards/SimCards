@@ -58,9 +58,7 @@ public class DeckView {
      * Redraws the deck when it is modified.
      */
     public void redraw() {
-        for (CardShape shape : cardShapes) {
-            shape.removeShape();
-        }
+        remove();
         cardShapes.clear();
         int deckSize = deck.cards.size();
         Position currentPosition = getCurrentPosition();
@@ -87,18 +85,25 @@ public class DeckView {
                 }
             }
         }
-        if (deck.visibility.hasCounter) {
-            if (number != null) {
-                number.remove();
-            }
-            if (deckSize > 0) {
-                Position numberOffset = new Position(-CardShape.getCenterOffsetX() + NumberShape.NUMBER_WIDTH,
-                        -CardShape.getCenterOffsetY() + NumberShape.NUMBER_HEIGHT);
+        if (deck.visibility.hasCounter && deckSize > 0) {
+            Position numberOffset = new Position(-CardShape.getCenterOffsetX() + NumberShape.NUMBER_WIDTH,
+                    -CardShape.getCenterOffsetY() + NumberShape.NUMBER_HEIGHT);
 
-                currentPosition.addPosition(numberOffset);
-                number = new NumberHolder(deckSize, currentPosition, rotation);
-                number.render();
-            }
+            currentPosition.addPosition(numberOffset);
+            number = new NumberHolder(deckSize, currentPosition, rotation);
+            number.render();
+        }
+    }
+
+    /**
+     * Removes the deck from the screen.
+     */
+    public void remove() {
+        for (CardShape shape : cardShapes) {
+            shape.removeShape();
+        }
+        if (number != null) {
+            number.remove();
         }
     }
 
