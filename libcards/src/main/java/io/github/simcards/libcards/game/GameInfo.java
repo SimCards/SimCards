@@ -15,7 +15,7 @@ public class GameInfo {
         // for firebase
     }
 
-    public GameInfo(String name, String rules, String id) {
+    public GameInfo(String name, String rules) {
         this.name=name;
         this.rules=rules;
         this.id=id;

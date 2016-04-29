@@ -12,6 +12,14 @@ public class RandomUtil {
     private static Random sRandom = new Random(System.currentTimeMillis());
 
     /**
+     * Sets the random seed used for the random number generation
+     * @param seed the random seed used for random number generation
+     */
+    public static void setSeed(long seed) {
+        sRandom.setSeed(seed);
+    }
+
+    /**
      * Gets a random number between a minimum (inclusive) and a maximum (exclusive)
      * @param min The minimum number that the random number can be.
      * @param max 1 + The maximum number that the random number can be.

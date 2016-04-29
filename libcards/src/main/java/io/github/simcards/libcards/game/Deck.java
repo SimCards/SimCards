@@ -1,17 +1,19 @@
 package io.github.simcards.libcards.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.simcards.libcards.game.enums.Rank;
 import io.github.simcards.libcards.game.enums.Suit;
 import io.github.simcards.libcards.graphics.GameScreen;
+import io.github.simcards.libcards.network.DeckUpdater;
 import io.github.simcards.libcards.util.RandomUtil;
 
 /**
  * A group of cards.
  */
-public class Deck {
+public class Deck implements Serializable {
 
     /** The ID of the deck, used to sync it with client-side DeckViews. */
     public final int id;
@@ -43,7 +45,8 @@ public class Deck {
         boolean success = cards.add(card);
         if (success) {
             // TODO: Change to a packet.
-            GameScreen.getScreen().getDeck(id).redraw();
+            // GameScreen.getScreen().getDeck(id).redraw();
+            DeckUpdater.updateDeck(this);
         }
         return success;
     }
@@ -54,6 +57,8 @@ public class Deck {
      */
     public void addToBottom(Card card) {
         cards.add(0, card);
+        // TODO: Change to a packet
+        DeckUpdater.updateDeck(this);
     }
 
     /**
@@ -68,7 +73,8 @@ public class Deck {
         } else if (cardIndex > 0) {
             cards.remove(card);
             // TODO: Change to a packet.
-            GameScreen.getScreen().getDeck(id).redraw();
+            // GameScreen.getScreen().getDeck(id).redraw();
+            DeckUpdater.updateDeck(this);
             return card;
         } else {
             return null;
@@ -111,7 +117,9 @@ public class Deck {
             return null;
         } else {
             Card topCard = cards.remove(cards.size() - 1);
-            GameScreen.getScreen().getDeck(id).redraw();
+            // TODO: replace with packet
+            // GameScreen.getScreen().getDeck(id).redraw();
+            DeckUpdater.updateDeck(this);
             return topCard;
         }
     }
@@ -125,6 +133,7 @@ public class Deck {
             shuffled.add(RandomUtil.removeRandomElementInList(cards));
         }
         cards = shuffled;
+        DeckUpdater.updateDeck(this);
     }
 
     /**
@@ -161,7 +170,6 @@ public class Deck {
         Card topCard = getTopCard();
         if (topCard != null) {
             System.out.println(topCard.rank.ordinal() + " " + topCard.suit.ordinal());
-            pop();
         }
     }
 }

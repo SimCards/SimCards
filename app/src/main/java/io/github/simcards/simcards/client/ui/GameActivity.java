@@ -14,11 +14,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.widget.Toast;
 
 import org.zeromq.ZMQ;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.game.CardGameEvent;
+import io.github.simcards.libcards.game.Deck;
+import io.github.simcards.libcards.game.Game;
+import io.github.simcards.libcards.game.Player;
+import io.github.simcards.libcards.network.GameClient;
 import io.github.simcards.libcards.util.Factory;
+import io.github.simcards.libcards.util.TouchHandler;
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.AndroidGLWrapper;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
@@ -33,7 +44,7 @@ import io.github.simcards.simcards.client.util.AndroidMiddleman;
 /**
  * Main activity screen.
  */
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     /** Surface for rendering objects. */
     private GLSurfaceView glView;
@@ -85,17 +96,32 @@ public class MainActivity extends AppCompatActivity {
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         System.out.println("Using ip address " + ip);
+        
+        final GameClient gameClient = new GameClient(MatchmakingActivity.getSocket(), new GameClient.GameClientListener() {
+            @Override
+            public void onGameOver() {
+                Toast.makeText(GameActivity.this, "GAME OVER", Toast.LENGTH_LONG);
+                Intent intent = new Intent(GameActivity.this, MenuActivity.class);
+                GameActivity.this.startActivity(intent);
+            }
+        });
+        environment.registerTouchHandler(new TouchHandler() {
+            @Override
+            public void handleTouch(Deck deck, Card card) {
+                // actually figure out the player's id
+                Player player = new Player(0);
+                List<Deck> decks = new ArrayList<>(1);
+                decks.add(deck);
+                List<List<Card>> cards = new ArrayList<>(1);
+                List<Card> nestedCards = new ArrayList<>(1);
+                nestedCards.add(card);
+                cards.add(nestedCards);
+                CardGameEvent event = new CardGameEvent(player, decks, cards);
+                gameClient.handleInput(event);
+            }
+        });
 
-        ZMQ.Context ctx = ZMQ.context(1);
-        ZMQ.Socket socket = ctx.socket(ZMQ.PAIR);
-
-        AbsolutelyRankedWar game = new AbsolutelyRankedWar(socket);
-        environment.registerTouchHandler(game);
-
-        Intent intent = getIntent();
-        String addr = intent.getStringExtra(MatchmakingActivity.PARAM_IP_ADDRESS);
-
-        new Thread(new SocketThread(socket, addr, game)).start();
+        new Thread(gameClient).start();
     }
 
     @Override

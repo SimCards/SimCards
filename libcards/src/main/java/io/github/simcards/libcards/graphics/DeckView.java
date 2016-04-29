@@ -47,6 +47,15 @@ public class DeckView {
     }
 
     /**
+     * Sets and redraws the deck
+     * @param d sets and replaces deck
+     */
+    public void replaceDeck(Deck d) {
+        this.deck = d;
+        this.redraw();
+    }
+
+    /**
      * Redraws the deck when it is modified.
      */
     public void redraw() {

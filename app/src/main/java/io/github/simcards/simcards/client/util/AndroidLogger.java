@@ -4,7 +4,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import io.github.simcards.libcards.util.ILog;
-import io.github.simcards.simcards.client.ui.MainActivity;
+import io.github.simcards.simcards.client.ui.GameActivity;
 
 public class AndroidLogger implements ILog {
     public void o(Object o) {
@@ -24,6 +24,6 @@ public class AndroidLogger implements ILog {
     }
 
     public void notice(Object o) {
-        Toast.makeText(MainActivity.getContext(), o.toString(), Toast.LENGTH_LONG);
+        Toast.makeText(GameActivity.getContext(), o.toString(), Toast.LENGTH_LONG);
     }
 }

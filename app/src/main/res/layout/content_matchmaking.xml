@@ -13,23 +13,21 @@
     tools:showIn="@layout/activity_matchmaking">
 
 
-    <EditText
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText_server_ip"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/button_find_match"
-        android:autoText="false"
-        android:editable="true"
-        android:hint="server ip address" />
+        android:id="@+id/progressBar"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Find Match"
-        android:id="@+id/button_find_match"
-        android:layout_alignTop="@+id/editText_server_ip"
-        android:layout_alignParentEnd="true" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Finding Game"
+        android:id="@+id/matchmaking_textview_status"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="54dp" />
 </RelativeLayout>

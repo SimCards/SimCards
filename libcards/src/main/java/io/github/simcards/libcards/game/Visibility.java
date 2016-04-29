@@ -1,12 +1,14 @@
 package io.github.simcards.libcards.game;
 
+import java.io.Serializable;
+
 import io.github.simcards.libcards.game.enums.Arrangement;
 import io.github.simcards.libcards.game.enums.Facing;
 
 /**
  * The visibility settings of a card deck.
  */
-public class Visibility {
+public class Visibility implements Serializable {
 
     /** Which direction cards face. */
     public final Facing facing;

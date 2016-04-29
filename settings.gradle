@@ -1,1 +1,1 @@
-include ':app', ':libcards', ':desktop', ':misc'
+include ':app', ':libcards', ':desktop', ':misc', ':server'

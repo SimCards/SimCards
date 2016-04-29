@@ -5,6 +5,7 @@ import java.util.Map;
 
 import io.github.simcards.libcards.graphics.DeckView;
 import io.github.simcards.libcards.graphics.GameScreen;
+import io.github.simcards.libcards.network.DeckUpdater;
 import io.github.simcards.libcards.util.GridPosition;
 import io.github.simcards.libcards.util.TouchHandler;
 
@@ -53,7 +54,8 @@ public class Environment {
     public void addNewDeck(Deck deck, GridPosition gridPosition, float rotation) {
         decks.put(deck.id, deck);
         // TODO: Change to a packet.
-        GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition, rotation));
+        // GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition, rotation));
+        DeckUpdater.addDeck(deck, gridPosition, rotation);
     }
 
     /**
@@ -72,8 +74,10 @@ public class Environment {
      */
     public Deck removeDeck(int id) {
         // TODO: Change to a packet.
-        GameScreen.getScreen().removeDeck(id);
-        return decks.remove(id);
+        // GameScreen.getScreen().removeDeck(id);
+        Deck d = decks.remove(id);
+        DeckUpdater.removeDeck(id);
+        return d;
     }
 
     /**
