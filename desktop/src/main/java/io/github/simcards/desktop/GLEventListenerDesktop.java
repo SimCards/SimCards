@@ -4,6 +4,7 @@ import com.jogamp.opengl.GL2ES2;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 
+import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.libcards.graphics.IGLWrapper;
 import io.github.simcards.libcards.util.Factory;
 import io.github.simcards.libcards.util.Logger;
@@ -19,7 +20,7 @@ public class GLEventListenerDesktop implements GLEventListener {
     private int fragmentShader;
 
     @Override
-    public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height ) {
+    public void reshape(GLAutoDrawable glautodrawable, int x, int y, int width, int height) {
         SimCardsDesktop.renderer.onSurfaceChanged(width, height);
     }
 

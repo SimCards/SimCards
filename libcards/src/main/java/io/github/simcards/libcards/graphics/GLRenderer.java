@@ -13,20 +13,35 @@ import io.github.simcards.libcards.util.Position;
  */
 public class GLRenderer {
 
-    /** Shapes to draw on the screen. */
+    /** Shapes to draw on the screen as part of the world. */
     private static final List<Shape> shapes = new ArrayList<>();
 
     /** The model view projection matrix. */
-    public static float[] mvpMatrix = new float[16];
+    private static float[] mvpMatrix = new float[16];
     /** The projection matrix. */
-    private float[] projectionMatrix = new float[16];
+    private static float[] projectionMatrix = new float[16];
     /** The unscaled projection matrix. */
-    private float[] baseProjectionMatrix = new float[16];
+    private static float[] baseProjectionMatrix = new float[16];
     /** The camera view matrix. */
-    private float[] viewMatrix = new float[16];
+    private static float[] viewMatrix = new float[16];
+
+    /* The static model view projection matrix. */
+    private static float[] fixedMVPMatrix = new float[16];
+    /* The static camera view matrix. */
+    private static float[] fixedViewMatrix = new float[16];
 
     /** The camera used to look at the playing field. */
     public static Camera camera = new Camera();
+
+    /** The z coordinate of the camera. */
+    private static final float ZCAMERA = -3;
+
+    /**
+     * Initializes the fixed view matrix.
+     */
+    public GLRenderer() {
+        Matrix.setLookAtM(fixedViewMatrix, 0, 0, 0, ZCAMERA, 0, 0, 0f, 0f, 1.0f, 0.0f);
+    }
 
     /**
      * Initializes the renderer.
@@ -63,17 +78,27 @@ public class GLRenderer {
         // Set the camera position (view matrix).
         Position cameraPosition = camera.position;
 
-        Matrix.setLookAtM(viewMatrix, 0, -cameraPosition.x, cameraPosition.y, -3,
+        Matrix.setLookAtM(viewMatrix, 0, -cameraPosition.x, cameraPosition.y, ZCAMERA,
                 -cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
 
         // Calculate the projection and view transformation.
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
+        Matrix.multiplyMM(fixedMVPMatrix, 0, baseProjectionMatrix, 0, fixedViewMatrix, 0);
 
         // Draw the shapes.
         synchronized(shapes) {
+            List<Shape> fixedShapes = new ArrayList<>();
             for (Shape shape : shapes) {
                 shape.initializeTexture();
-                shape.draw(mvpMatrix);
+                if (shape.fixed) {
+                    fixedShapes.add(shape);
+                } else {
+                    shape.draw(mvpMatrix);
+                }
+            }
+            // Draw fixed shapes after world shapes.
+            for (Shape shape : fixedShapes) {
+                shape.draw(fixedMVPMatrix);
             }
         }
     }
@@ -84,6 +109,9 @@ public class GLRenderer {
      * @param height The new window height.
      */
     public void onSurfaceChanged(int width, int height) {
+        GraphicsUtil.screenWidth = width;
+        GraphicsUtil.screenHeight = height;
+
         IGLWrapper gl = Factory.gl();
         gl.glViewport(0, 0, width, height);
 
@@ -91,6 +119,8 @@ public class GLRenderer {
 
         // This projection matrix is applied to object coordinates in the onDrawFrame() method.
         Matrix.orthoM(baseProjectionMatrix, 0, -ratio, ratio, -1, 1, 3, 50);
+
+        GameScreen.getScreen().redrawHand();
 
         rerender();
     }
@@ -106,7 +136,7 @@ public class GLRenderer {
     }
 
     /**
-     * Adds an shape to the render list.
+     * Adds a shape to the render list.
      * @param shape The shape to add to the render list.
      */
     public static void addShape(Shape shape) {

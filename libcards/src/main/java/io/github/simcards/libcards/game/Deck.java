@@ -3,6 +3,8 @@ package io.github.simcards.libcards.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.simcards.libcards.game.enums.Arrangement;
+import io.github.simcards.libcards.game.enums.Facing;
 import io.github.simcards.libcards.game.enums.Rank;
 import io.github.simcards.libcards.game.enums.Suit;
 import io.github.simcards.libcards.graphics.GameScreen;
@@ -19,6 +21,8 @@ public class Deck {
     public List<Card> cards;
     /** The visibility settings of the cards in the deck. */
     public Visibility visibility;
+    /** The ID of the player who owns the deck. */
+    public int playerID = -1;
 
     /** Counter used to assign unique deck IDs. */
     private static int idCounter;
@@ -32,6 +36,16 @@ public class Deck {
         this.id = idCounter++;
         this.cards = cards;
         this.visibility = visibility;
+    }
+
+    /**
+     * Creates a hand of cards.
+     * @param cards The cards initially in the hand.
+     * @param playerID The ID of the player who owns the hand.
+     */
+    public Deck(List<Card> cards, int playerID) {
+        this(cards, new Visibility(Facing.OWNER, false, Arrangement.HORIZONTAL));
+        this.playerID = playerID;
     }
 
     /**
@@ -65,7 +79,7 @@ public class Deck {
         int cardIndex = cards.indexOf(card);
         if (cardIndex == cards.size() - 1) {
             return pop();
-        } else if (cardIndex > 0) {
+        } else if (cardIndex >= 0) {
             cards.remove(card);
             // TODO: Change to a packet.
             GameScreen.getScreen().getDeck(id).redraw();
@@ -154,14 +168,10 @@ public class Deck {
     }
 
     /**
-     * Does an action upon the deck being touched.
+     * Checks if the deck is empty.
+     * @return Whether the deck is empty.
      */
-    public void touch() {
-        // Process the deck touch.
-        Card topCard = getTopCard();
-        if (topCard != null) {
-            System.out.println(topCard.rank.ordinal() + " " + topCard.suit.ordinal());
-            pop();
-        }
+    public boolean isEmpty() {
+        return cards.isEmpty();
     }
 }

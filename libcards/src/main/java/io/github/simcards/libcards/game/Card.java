@@ -28,4 +28,9 @@ public class Card {
         this.suit = suit;
         this.id = idCounter++;
     }
+
+    @Override
+    public String toString() {
+        return this.rank.toString() + " of " + this.suit.toString();
+    }
 }

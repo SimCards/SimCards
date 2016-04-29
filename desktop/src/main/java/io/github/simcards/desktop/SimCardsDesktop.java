@@ -60,7 +60,7 @@ public class SimCardsDesktop {
         glWindow.setVisible(true);
         animator.start();
         Environment environment = Environment.getEnvironment();
-        //initializeTestEnvironment();
+        initializeTestEnvironment();
 
         ZMQ.Context ctx = ZMQ.context(1);
         ZMQ.Socket socket = ctx.socket(ZMQ.PAIR);
@@ -103,6 +103,23 @@ public class SimCardsDesktop {
         cards4.add(new Card(Rank.ACE, Suit.DIAMOND));
         Deck deck4 = new Deck(cards4, new Visibility(Facing.FACE_UP));
         environment.addNewDeck(deck4, new GridPosition(0, 1));
+
+        List<Card> cards5 = new ArrayList<>();
+        cards5.add(new Card(Rank.KING, Suit.SPADE));
+        cards5.add(new Card(Rank.QUEEN, Suit.SPADE));
+        cards5.add(new Card(Rank.JACK, Suit.SPADE));
+        cards5.add(new Card(Rank.TEN, Suit.SPADE));
+        cards5.add(new Card(Rank.NINE, Suit.SPADE));
+        cards5.add(new Card(Rank.EIGHT, Suit.SPADE));
+        cards5.add(new Card(Rank.SEVEN, Suit.SPADE));
+        cards5.add(new Card(Rank.SIX, Suit.SPADE));
+        cards5.add(new Card(Rank.FIVE, Suit.SPADE));
+        cards5.add(new Card(Rank.FOUR, Suit.SPADE));
+        cards5.add(new Card(Rank.THREE, Suit.SPADE));
+        cards5.add(new Card(Rank.TWO, Suit.SPADE));
+        cards5.add(new Card(Rank.ACE, Suit.SPADE));
+        Deck deck5 = new Deck(cards5, 0);
+        environment.addHand(deck5);
     }
 
     /**
