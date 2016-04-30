@@ -28,14 +28,6 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
-        Button create = (Button) findViewById(R.id.button_create);
-        create.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(MenuActivity.this, "create functionality coming soon!", Toast.LENGTH_SHORT).show();
-            }
-        });
-
         Button share = (Button) findViewById(R.id.button_share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override

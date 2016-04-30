@@ -1,9 +1,5 @@
 package io.github.simcards.libcards.game;
 
-import org.json.JSONObject;
-
-import java.util.List;
-
 public interface UserGame {
     /**
      * Called by the server to initialize the game
@@ -12,15 +8,19 @@ public interface UserGame {
     public void init(int numPlayers);
 
     /**
-     * Advances the state of the game given a dictionary of input fields defined by the player
+     * Advances the state of the game given input from the player
      * @param event input from the player about which cards were interacted with
-     * @return true if the game is finished, false otherwise
      */
     public void advanceState(CardGameEvent event);
 
     /**
-     * Returns the player_id of the winner
-     * @return the player_id of the winner
+     * Returns the player_id of the winner, -1 if no winner yet
+     * @return the player_id of the winner, -1 if no winner yet
      */
     public int getWinner();
 }
+
+
+
+
+

@@ -1,12 +1,14 @@
 package io.github.simcards.simcards.client.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -83,6 +85,14 @@ public class GameInfoActivity extends Activity {
         play.setText("Play");
         play.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 0.1f));
         ll.addView(play);
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GameInfoActivity.this, MatchmakingActivity.class);
+                intent.putExtra(MatchmakingActivity.PARAM_GAME_ID, cg.getID());
+                GameInfoActivity.this.startActivity(intent);
+            }
+        });
 
 
         setContentView(ll);

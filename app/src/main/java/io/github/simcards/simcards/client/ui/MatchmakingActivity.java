@@ -2,6 +2,8 @@ package io.github.simcards.simcards.client.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,25 +12,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.zeromq.ZMQ;
 
 import java.util.Set;
+import java.util.logging.Handler;
 
 import io.github.simcards.libcards.game.AbsolutelyRankedWarGame;
 import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.game.GameInfo;
 import io.github.simcards.libcards.network.MatchmakingClient;
 import io.github.simcards.simcards.R;
+import io.github.simcards.simcards.client.util.MakeToast;
 
 public class MatchmakingActivity extends AppCompatActivity {
 
-    public static final String PARAM_IP_ADDRESS = "PARAM_IP_ADDRESS";
+    public static final String PARAM_GAME_ID = "PARAM_GAME_ID";
+
+    public static final String MM_SERVER_ADDR = "128.61.98.102";
 
     ProgressBar spinner;
     TextView status;
     private static ZMQ.Socket socket;
     private static Integer playerId;
+
+    private MatchmakingClient mmClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +46,25 @@ public class MatchmakingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // get the game identifier parameter
+        Intent intent = this.getIntent();
+        String gameId = intent.getStringExtra(PARAM_GAME_ID);
+        if (gameId == null) {
+            gameId = "";
+        }
+
+
+        // initialize UI elements
         spinner = (ProgressBar) findViewById(R.id.progressBar);
         spinner.setVisibility(View.VISIBLE);
         spinner.setIndeterminate(true);
 
         status = (TextView) findViewById(R.id.matchmaking_textview_status);
         status.setText("Finding Game");
+
+        // start the matchmaking client
+        mmClient = new MatchmakingClient(MM_SERVER_ADDR, gameId, new MyMMListener());
+        mmClient.start();
     }
 
     public class MyMMListener implements MatchmakingClient.MMListener {
@@ -63,9 +85,14 @@ public class MatchmakingActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onFailure() {
+        public void onFailure(String message) {
             socket = null;
             playerId = null;
+
+            MatchmakingActivity.this.runOnUiThread(new MakeToast(MatchmakingActivity.this, "matchmaking failed: " + message));
+            Intent intent = new Intent(MatchmakingActivity.this, MenuActivity.class);
+
+            MatchmakingActivity.this.startActivity(intent);
         }
     }
 

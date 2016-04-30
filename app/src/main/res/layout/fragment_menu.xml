@@ -25,17 +25,8 @@
         android:layout_height="wrap_content"
         android:text="Play"
         android:id="@+id/button_play"
-        android:layout_above="@+id/button_create"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create"
-        android:id="@+id/button_create"
         android:layout_above="@+id/button_share"
-        android:layout_alignStart="@+id/button_play"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
     <Button
@@ -44,9 +35,9 @@
         android:text="Share"
         android:id="@+id/button_share"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/button_create"
+        android:layout_alignStart="@+id/button_play"
         android:layout_marginBottom="57dp"
-        android:layout_alignEnd="@+id/button_create" />
+        android:layout_alignEnd="@+id/button_play" />
 
 
 </RelativeLayout>

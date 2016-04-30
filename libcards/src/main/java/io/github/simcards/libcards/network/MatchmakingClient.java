@@ -15,34 +15,45 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.github.simcards.libcards.util.RandomUtil;
-
-public class MatchmakingClient {
+public class MatchmakingClient extends Thread {
 
     private String host;
-    private int gameIdentifier;
+    private String gameId;
     private int playerName;
     private MMListener listener;
 
-    public MatchmakingClient(String host, MMListener listener) {
+    public MatchmakingClient(String host, String gameId, MMListener listener) {
         this.host = host;
         this.playerName = 0;
-        this.gameIdentifier = 0;
+        this.gameId = gameId;
         this.listener = listener;
     }
 
-    public void run() throws UnknownHostException, IOException {
-        Socket sock = new Socket(host, 4000);
+    @Override
+    public void run() {
+        Socket sock;
+        String gameServerAddress;
+        try {
+            // initialize socket
+            sock = new Socket(host, 4000);
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-        BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+            // get our socket for the game server
+            writer.write(gameId + "\n");
+            gameServerAddress = reader.readLine();
 
-        writer.write("gameIdentifier: " + gameIdentifier + "\n");
-        String gameServerAddress = reader.readLine();
+            // clean up the socket
+            writer.close();
+            reader.close();
+            sock.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            listener.onFailure(e.getMessage());
+            return;
+        }
 
-        writer.close();
-        reader.close();
-        sock.close();
+        // join the game server
 
         ZMQ.Context ctx = ZMQ.context(1);
         ZMQ.Socket gameSock = ctx.socket(ZMQ.PAIR);
@@ -76,6 +87,6 @@ public class MatchmakingClient {
     public interface MMListener {
         void onConnected(Set<Integer> playersConnected);
         void onSuccess(ZMQ.Socket sock, int player_id);
-        void onFailure();
+        void onFailure(String message);
     }
 }

@@ -40,6 +40,7 @@ import io.github.simcards.libcards.game.AbsolutelyRankedWar;
 import io.github.simcards.libcards.game.Environment;
 import io.github.simcards.simcards.client.util.AndroidLogger;
 import io.github.simcards.simcards.client.util.AndroidMiddleman;
+import io.github.simcards.simcards.client.util.MakeToast;
 
 /**
  * Main activity screen.
@@ -96,11 +97,11 @@ public class GameActivity extends AppCompatActivity {
         WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
         String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
         System.out.println("Using ip address " + ip);
-        
+
         final GameClient gameClient = new GameClient(MatchmakingActivity.getSocket(), new GameClient.GameClientListener() {
             @Override
             public void onGameOver() {
-                Toast.makeText(GameActivity.this, "GAME OVER", Toast.LENGTH_LONG);
+                GameActivity.this.runOnUiThread(new MakeToast(GameActivity.this, "GAME OVER"));
                 Intent intent = new Intent(GameActivity.this, MenuActivity.class);
                 GameActivity.this.startActivity(intent);
             }
@@ -109,7 +110,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void handleTouch(Deck deck, Card card) {
                 // actually figure out the player's id
-                Player player = new Player(0);
+                Player player = new Player(MatchmakingActivity.getPlayerId());
                 List<Deck> decks = new ArrayList<>(1);
                 decks.add(deck);
                 List<List<Card>> cards = new ArrayList<>(1);
