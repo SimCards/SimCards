@@ -29,9 +29,11 @@ public class GameServerThread extends Thread {
     @Override
     public void run() {
         // wait for everyone to connect
+        System.out.println("Waiting for everyone to connect");
         ZMQ.Socket[] socks = connector.connectAll();
 
         // start up the game server
+        System.out.println("starting up game server");
         Game game = downloadGame(gameId);
         GameServer gameServer = new GameServer(game, socks);
         gameServer.start();

@@ -5,12 +5,9 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.Animator;
 
-import org.zeromq.ZMQ;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.simcards.libcards.game.AbsolutelyRankedWar;
 import io.github.simcards.libcards.game.enums.Arrangement;
 import io.github.simcards.libcards.game.enums.Facing;
 import io.github.simcards.libcards.graphics.GLRenderer;
@@ -21,7 +18,6 @@ import io.github.simcards.libcards.game.Environment;
 import io.github.simcards.libcards.game.enums.Rank;
 import io.github.simcards.libcards.game.enums.Suit;
 import io.github.simcards.libcards.game.Visibility;
-import io.github.simcards.libcards.network.SocketThread;
 import io.github.simcards.libcards.util.GridPosition;
 
 /**
@@ -60,17 +56,7 @@ public class SimCardsDesktop {
         glWindow.setVisible(true);
         animator.start();
         Environment environment = Environment.getEnvironment();
-        //initializeTestEnvironment();
-
-        ZMQ.Context ctx = ZMQ.context(1);
-        ZMQ.Socket socket = ctx.socket(ZMQ.PAIR);
-
-        AbsolutelyRankedWar game = new AbsolutelyRankedWar(socket);
-        environment.registerTouchHandler(game);
-
-        String addr = "127.0.0.1";
-
-        new Thread(new SocketThread(socket, addr, game)).start();
+        initializeTestEnvironment();
     }
 
     /**

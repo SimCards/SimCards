@@ -33,35 +33,51 @@ public class MatchmakingClient extends Thread {
     public void run() {
         Socket sock;
         String gameServerAddress;
+        int mm_server_port = 4000;
         try {
+            System.out.println("Initializing socket to " + host + " on port " + mm_server_port);
             // initialize socket
-            sock = new Socket(host, 4000);
+            sock = new Socket(host, mm_server_port);
+            System.out.println("Initialized socket");
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
             BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
             // get our socket for the game server
+            System.out.println("Writing game request: " + gameId);
             writer.write(gameId + "\n");
+            writer.flush();
+            System.out.println("Waiting for game address");
             gameServerAddress = reader.readLine();
+            if (gameServerAddress == null) {
+                System.out.println("no address received");
+                listener.onFailure("server unavailable");
+                return;
+            }
+            System.out.println("Received gameServerAddress: " + gameServerAddress);
 
             // clean up the socket
             writer.close();
             reader.close();
             sock.close();
         } catch (IOException e) {
+            System.out.println("Something went wrong with the matchmaking client");
             e.printStackTrace();
             listener.onFailure(e.getMessage());
             return;
         }
 
         // join the game server
-
+        System.out.println("initializing zmq game sock");
         ZMQ.Context ctx = ZMQ.context(1);
         ZMQ.Socket gameSock = ctx.socket(ZMQ.PAIR);
-        gameSock.connect(gameServerAddress);
+        System.out.println("trying to connect game sock to tcp://" + gameServerAddress);
+        gameSock.connect("tcp://" + gameServerAddress);
 
+        System.out.println("Sending connected message");
         SerializableMsg connectMsg = new SerializableMsg(MessageType.CONNECTED, "player_name");
         gameSock.send(connectMsg.getBytes());
 
+        System.out.println("waiting to receive game ready message");
         GameReadyMessage grm = null;
         boolean gameReady = false;
         while (!gameReady) {
@@ -69,10 +85,12 @@ public class MatchmakingClient extends Thread {
 
             switch (recvMsg.type) {
                 case CONNECT_UPDATE:
+                    System.out.println("Received connect update");
                     Set<Integer> playersConnected = new HashSet<>((ArrayList<Integer>) recvMsg.getContent());
                     listener.onConnected(playersConnected);
                     break;
                 case GAME_READY:
+                    System.out.println("Received game ready message");
                     gameReady = true;
                     grm = (GameReadyMessage) recvMsg.getContent();
                     break;

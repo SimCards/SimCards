@@ -3,41 +3,27 @@ package io.github.simcards.simcards.client.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.wifi.WifiManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.Formatter;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
-import android.widget.Toast;
-
-import org.zeromq.ZMQ;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.github.simcards.libcards.game.Card;
-import io.github.simcards.libcards.game.CardGameEvent;
-import io.github.simcards.libcards.game.Deck;
-import io.github.simcards.libcards.game.Game;
-import io.github.simcards.libcards.game.Player;
+import io.github.simcards.libcards.graphics.GameScreen;
+import io.github.simcards.libcards.network.EventMessage;
 import io.github.simcards.libcards.network.GameClient;
+import io.github.simcards.libcards.util.ClientTouchHandler;
 import io.github.simcards.libcards.util.Factory;
-import io.github.simcards.libcards.util.TouchHandler;
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.graphics.AndroidGLWrapper;
 import io.github.simcards.simcards.client.graphics.GLSurfaceViewWrapper;
 import io.github.simcards.libcards.graphics.GraphicsUtil;
 import io.github.simcards.simcards.client.graphics.ResourceUtil;
-import io.github.simcards.libcards.network.SocketThread;
-import io.github.simcards.libcards.game.AbsolutelyRankedWar;
-import io.github.simcards.libcards.game.Environment;
 import io.github.simcards.simcards.client.util.AndroidLogger;
 import io.github.simcards.simcards.client.util.AndroidMiddleman;
 import io.github.simcards.simcards.client.util.MakeToast;
@@ -92,11 +78,7 @@ public class GameActivity extends AppCompatActivity {
         touchDetector = new GestureDetectorCompat(this, new TouchListener());
         zoomDetector = new ScaleGestureDetector(this, new ZoomListener());
 
-        Environment environment = Environment.getEnvironment();
 
-        WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
-        String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-        System.out.println("Using ip address " + ip);
 
         final GameClient gameClient = new GameClient(MatchmakingActivity.getSocket(), new GameClient.GameClientListener() {
             @Override
@@ -106,19 +88,12 @@ public class GameActivity extends AppCompatActivity {
                 GameActivity.this.startActivity(intent);
             }
         });
-        environment.registerTouchHandler(new TouchHandler() {
+
+        GameScreen.getScreen().setTouchHandler(new ClientTouchHandler() {
             @Override
-            public void handleTouch(Deck deck, Card card) {
-                // actually figure out the player's id
-                Player player = new Player(MatchmakingActivity.getPlayerId());
-                List<Deck> decks = new ArrayList<>(1);
-                decks.add(deck);
-                List<List<Card>> cards = new ArrayList<>(1);
-                List<Card> nestedCards = new ArrayList<>(1);
-                nestedCards.add(card);
-                cards.add(nestedCards);
-                CardGameEvent event = new CardGameEvent(player, decks, cards);
-                gameClient.handleInput(event);
+            public void onTouched(int deckId, int cardId) {
+                EventMessage eventMsg = new EventMessage(MatchmakingActivity.getPlayerId(), deckId, cardId);
+                gameClient.handleInput(eventMsg);
             }
         });
 

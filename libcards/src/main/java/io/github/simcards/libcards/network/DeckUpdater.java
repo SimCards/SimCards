@@ -13,19 +13,18 @@ import io.github.simcards.libcards.util.GridPosition;
 public class DeckUpdater {
 
     public static void addDeck(Deck d, GridPosition p, float rotation) {
-        SendQueueThread.getThread().addToQueue(new SerializableMsg(MessageType.DECK_ADD, d));
+        SendQueueThread.getThread().addToQueue(new SerializableMsg(MessageType.DECK_ADD, new DeckAddMsg(d, p, rotation)));
     }
 
     public static void updateDeck(Deck d) {
         SendQueueThread.getThread().addToQueue(new SerializableMsg(MessageType.DECK_UPDATE, d));
-
     }
 
     public static void removeDeck(int id) {
         SendQueueThread.getThread().addToQueue(new SerializableMsg(MessageType.DECK_UPDATE, id));
     }
 
-    public class DeckAddMsg implements Serializable {
+    public static class DeckAddMsg implements Serializable {
         Deck d;
         GridPosition p;
         float rotation;

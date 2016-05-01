@@ -10,8 +10,9 @@ import io.github.simcards.libcards.game.Deck;
 public interface TouchHandler {
     /**
      * Handles a touch event on a deck.
+     * @param player_id the played that initiated the touch
      * @param deck The deck that was touched.
      * @param card The card that was touched.
      */
-    void handleTouch(Deck deck, Card card);
+    void handleTouch(int player_id, Deck deck, Card card);
 }

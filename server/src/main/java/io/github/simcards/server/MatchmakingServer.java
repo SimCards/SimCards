@@ -32,20 +32,28 @@ public class MatchmakingServer {
 
         while (true) {
             try {
+                System.out.println("Accepting mm requests...(index: " + i + ")");
                 Socket sock = serverSocket.accept();
+                System.out.println("Accepted mm request");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 
                 // handle the request
+                System.out.println("Reading game request");
                 String gameRequest = reader.readLine();
+                System.out.println("Read gameRequest: " + gameRequest);
                 writer.write(addrs[i] + "\n");
+                writer.flush();
+                System.out.println("Wrote addr: " + addrs[i]);
 
                 // clean up the socket
                 reader.close();
                 writer.close();
                 sock.close();
 
-                i = i % addrs.length;
+                System.out.println("Closed sockets");
+
+                i = (i  + 1) % addrs.length;
             } catch (IOException e) {
                 e.printStackTrace();
             }

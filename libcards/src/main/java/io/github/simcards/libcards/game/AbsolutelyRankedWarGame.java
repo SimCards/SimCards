@@ -16,7 +16,6 @@ public class AbsolutelyRankedWarGame implements UserGame {
     private Deck[] piles;
 
     private boolean initialized;
-    private boolean game_over;
 
     @Override
     public void init(int numPlayers) {

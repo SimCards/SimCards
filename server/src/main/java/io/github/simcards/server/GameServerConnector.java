@@ -34,8 +34,8 @@ public class GameServerConnector {
      */
     public GameServerConnector(ZMQ.Context ctx, int numPlayers) throws UnknownHostException {
 
-        String addr = InetAddress.getLocalHost().toString();
-        System.out.println("getLocalHost: " + addr);
+        String addr = InetAddress.getLocalHost().getHostAddress();
+        System.out.println("getLocalHost: " + InetAddress.getLocalHost());
 
         this.ctx = ctx;
         this.socks = new ZMQ.Socket[numPlayers];
@@ -44,10 +44,11 @@ public class GameServerConnector {
 
         for (int i = 0; i < numPlayers; i++) {
             ZMQ.Socket sock = ctx.socket(ZMQ.PAIR);
-            int intendedPort = 6000 + i;
-            sock.bind("tcp://0.0.0.0:" + intendedPort);
+            //int port = 6000 + i;
+            //sock.bind("tcp://0.0.0.0:" + port);
+            int port = sock.bindToRandomPort("tcp://0.0.0.0");
             socks[i] = sock;
-            addrs[i] = addr + ":" + intendedPort;
+            addrs[i] = addr + ":" + port;
         }
     }
 
@@ -85,7 +86,7 @@ public class GameServerConnector {
                         case CONNECTED:
                             if (!playersConnected.contains(i)) {
                                 System.out.println("Player " + i + " connected!");
-                                poller.unregister(socks[i]);
+                                // poller.unregister(socks[i]);
                                 playersConnected.add(i);
                                 updatePlayers(playersConnected);
                             } else {

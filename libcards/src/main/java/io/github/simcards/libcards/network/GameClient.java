@@ -64,8 +64,8 @@ public class GameClient extends Thread {
         listener.onGameOver();
     }
 
-    public void handleInput(CardGameEvent event) {
-        (new ZeroMQSendThread(sock, event.toJSON())).start();
+    public void handleInput(EventMessage event) {
+        (new ZeroMQSendThread(sock, new SerializableMsg(MessageType.EVENT, event))).start();
     }
 
     public interface GameClientListener {

@@ -3,8 +3,10 @@ package io.github.simcards.libcards.graphics;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.simcards.libcards.game.Environment;
+import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.util.ClientTouchHandler;
 import io.github.simcards.libcards.util.Position;
+import io.github.simcards.libcards.util.TouchHandler;
 
 /**
  * Handles deck display and deck touching.
@@ -19,6 +21,9 @@ public class GameScreen {
 
     /** The singleton instance of the screen. */
     private static GameScreen gameScreen = new GameScreen();
+
+    /** A handler to be called when a deck is touched **/
+    private ClientTouchHandler touchHandler;
 
     /**
      * Gets the singleton instance of the screen.
@@ -68,10 +73,13 @@ public class GameScreen {
         for (DeckView deck : decks.values()) {
             int cardTouched = deck.getTouched(position);
             if (cardTouched != -1) {
-                // TODO: Change to a packet.
-                Environment.getEnvironment().touchDeck(deck.id, cardTouched);
+                touchHandler.onTouched(deck.id, cardTouched);
                 return;
             }
         }
+    }
+
+    public void setTouchHandler(ClientTouchHandler touchHandler) {
+        this.touchHandler = touchHandler;
     }
 }

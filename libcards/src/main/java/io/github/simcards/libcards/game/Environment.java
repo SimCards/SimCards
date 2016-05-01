@@ -85,7 +85,7 @@ public class Environment {
      * @param deckID The ID of the deck being touched.
      * @param cardID The ID of the card being touched.
      */
-    public void touchDeck(int deckID, int cardID) {
+    public void touchDeck(int playerID, int deckID, int cardID) {
         Deck deck = getDeck(deckID);
         Card selectedCard = null;
         for (Card card : deck.cards) {
@@ -95,7 +95,7 @@ public class Environment {
         }
         deck.touch();
         if (touchHandler != null && selectedCard != null) {
-            touchHandler.handleTouch(deck, selectedCard);
+            touchHandler.handleTouch(playerID, deck, selectedCard);
         }
     }
 

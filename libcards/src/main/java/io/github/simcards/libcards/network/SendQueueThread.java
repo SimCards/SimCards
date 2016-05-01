@@ -4,20 +4,21 @@ import org.zeromq.ZMQ;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-public class SendQueueThread {
+public class SendQueueThread extends Thread {
 
 
     private static SendQueueThread thread;
 
     private boolean keep_going;
 
-    private ZMQ.Socket sock;
+    private ZMQ.Socket[] socks;
     private BlockingQueue<SerializableMsg> queue;
 
-
-    public static void init(ZMQ.Socket sock) {
-        thread = new SendQueueThread(sock);
+    public static void init(ZMQ.Socket[] socks) {
+        thread = new SendQueueThread(socks);
+        thread.start();
     }
 
     public static SendQueueThread getThread() {
@@ -25,23 +26,34 @@ public class SendQueueThread {
         return thread;
     }
 
-    private SendQueueThread(ZMQ.Socket sock) {
-        this.sock = sock;
+    private SendQueueThread(ZMQ.Socket[] socks) {
+        this.socks = socks;
         this.queue = new LinkedBlockingQueue<>();
         this.keep_going = true;
     }
 
+    @Override
     public void run() {
-        while (this.keep_going) {
+        while (this.keep_going || this.queue.size() > 0) {
             try {
-                SerializableMsg msg = queue.take();
-                sock.send(msg.getBytes());
+                SerializableMsg msg = queue.poll(500, TimeUnit.MILLISECONDS);
+                if (msg != null) {
+                    System.out.println("Sending out msg of type " + msg.type);
+                    for (int i = 0; i < socks.length; i++) {
+                        socks[i].send(msg.getBytes());
+                    }
+                }
             } catch (InterruptedException e) {}
         }
         thread = null;
     }
 
+    public void end() {
+        this.keep_going = false;
+    }
+
     public void addToQueue(SerializableMsg msg) {
+        System.out.println("adding " + msg.type + " to queue");
         queue.add(msg);
     }
 

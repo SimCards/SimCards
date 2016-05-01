@@ -30,7 +30,7 @@ public class MatchmakingActivity extends AppCompatActivity {
 
     public static final String PARAM_GAME_ID = "PARAM_GAME_ID";
 
-    public static final String MM_SERVER_ADDR = "128.61.98.102";
+    public static final String MM_SERVER_ADDR = "143.215.90.209";
 
     ProgressBar spinner;
     TextView status;
@@ -62,6 +62,7 @@ public class MatchmakingActivity extends AppCompatActivity {
         status = (TextView) findViewById(R.id.matchmaking_textview_status);
         status.setText("Finding Game");
 
+        System.out.println("Starting matchmaking client!");
         // start the matchmaking client
         mmClient = new MatchmakingClient(MM_SERVER_ADDR, gameId, new MyMMListener());
         mmClient.start();
@@ -69,9 +70,17 @@ public class MatchmakingActivity extends AppCompatActivity {
 
     public class MyMMListener implements MatchmakingClient.MMListener {
 
+        int numPlayersConnected;
+
         @Override
         public void onConnected(Set<Integer> playersConnected) {
-            status.setText("Finding Game\n" + playersConnected.size() + " players found");
+            numPlayersConnected = playersConnected.size();
+            MatchmakingActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    status.setText("Finding Game\n" + numPlayersConnected + " players found");
+                }
+            });
         }
 
         @Override

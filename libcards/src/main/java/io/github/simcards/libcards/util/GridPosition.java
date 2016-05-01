@@ -1,11 +1,13 @@
 package io.github.simcards.libcards.util;
 
+import java.io.Serializable;
+
 import io.github.simcards.libcards.graphics.CardShape;
 
 /**
  * Keeps track of position in grid cells.
  */
-public class GridPosition {
+public class GridPosition implements Serializable {
 
     /** The x coordinate of the grid position. */
     public int x;
