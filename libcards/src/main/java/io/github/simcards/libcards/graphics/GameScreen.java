@@ -15,6 +15,8 @@ public class GameScreen {
 
     /** The decks on the field. */
     private Map<Integer, DeckView> decks = new HashMap<>();
+    /** The hand on the screen. */
+    private HandView hand;
 
     /** The ID of the client player in the game. */
     public int playerID;
@@ -48,6 +50,27 @@ public class GameScreen {
     }
 
     /**
+     * Updates the currently displayed hand.
+     * @param hand The hand to display.
+     */
+    public void addHand(HandView hand) {
+        if (hand != null) {
+            removeDeck(hand.id);
+        }
+        this.hand = hand;
+        addNewDeck(hand);
+    }
+
+    /**
+     * Redraws the displayed hand.
+     */
+    void redrawHand() {
+        if (hand != null) {
+            hand.redraw();
+        }
+    }
+
+    /**
      * Gets a deck by its ID.
      * @param id The ID of the deck.
      * @return The deck with the specified ID.
@@ -62,7 +85,11 @@ public class GameScreen {
      * @return The deck removed from the environment.
      */
     public DeckView removeDeck(int id) {
-        return decks.remove(id);
+        DeckView removedDeck = decks.remove(id);
+        if (removedDeck != null) {
+            removedDeck.remove();
+        }
+        return removedDeck;
     }
 
     /**

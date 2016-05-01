@@ -3,6 +3,7 @@ package io.github.simcards.libcards.graphics;
 import io.github.simcards.libcards.game.Card;
 import io.github.simcards.libcards.util.BoundingBox;
 import io.github.simcards.libcards.util.Factory;
+import io.github.simcards.libcards.util.MathUtil;
 import io.github.simcards.libcards.util.Matrix;
 import io.github.simcards.libcards.util.Middleman;
 import io.github.simcards.libcards.util.Position;
@@ -38,6 +39,17 @@ public class CardShape {
      * @param rotation The rotation angle (in degrees) of the card.
      */
     public CardShape(Card card, Position position, float rotation) {
+        this(card, position, rotation, false);
+    }
+
+    /**
+     * Adds a card shape to the renderer.
+     * @param card The card that the shape is representing.
+     * @param position The position of the card on the field.
+     * @param rotation The rotation angle (in degrees) of the card.
+     * @param fixed Whether the card's position is affected by camera movement.
+     */
+    public CardShape(Card card, Position position, float rotation, boolean fixed) {
         id = card.id;
         this.card = card;
         this.position = position;
@@ -71,8 +83,12 @@ public class CardShape {
         corners[1] = new Position(left, bottom);
         corners[2] = new Position(right, bottom);
         corners[3] = new Position(right, top);
-        for (int i = 0; i < corners.length; i++) {
-            corners[i].rotate(rotation);
+        if (rotation != 0) {
+            for (int i = 0; i < corners.length; i++) {
+                corners[i].rotate(rotation);
+            }
+            this.position = new Position(-MathUtil.getAverage(corners[0].x, corners[2].x),
+                    MathUtil.getAverage(corners[0].y, corners[2].y));
         }
         float[] vertices = new float[]{
                 corners[0].x, corners[0].y, 0.0f,
@@ -82,7 +98,8 @@ public class CardShape {
         shape = new Shape(vertices,
                 new short[]{0, 1, 2, 0, 2, 3},
                 textureCoordinates,
-                Middleman.getImageLocation(this));
+                Middleman.getImageLocation(this),
+                fixed);
         GLRenderer.addShape(shape);
     }
 
@@ -140,8 +157,12 @@ public class CardShape {
         touchPosition = touchPosition.clone();
         touchPosition.addPosition(-GraphicsUtil.screenWidth / 2, -halfScreenHeight);
         touchPosition.invertY();
-        touchPosition.scale(GLRenderer.camera.scale / halfScreenHeight);
-        touchPosition.addPosition(GLRenderer.camera.position);
+        if (shape.fixed) {
+            touchPosition.scale(GLRenderer.camera.INITIAL_SCALE / halfScreenHeight);
+        } else {
+            touchPosition.scale(GLRenderer.camera.scale / halfScreenHeight);
+            touchPosition.addPosition(GLRenderer.camera.position);
+        }
         BoundingBox boundingBox = getBoundingBox();
         return boundingBox.isInside(touchPosition, rotation);
     }
@@ -155,5 +176,10 @@ public class CardShape {
         float yOffset = CardShape.getCenterOffsetY();
         return new BoundingBox(position.x - xOffset, position.x + xOffset,
                 position.y - yOffset, position.y + yOffset);
+    }
+
+    @Override
+    public String toString() {
+        return card.toString();
     }
 }

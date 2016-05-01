@@ -37,6 +37,9 @@ public class Shape {
     /** The index of the texture to use for the shape. */
     public int textureID;
 
+    /** Whether the shape's position is affected by camera movement. */
+    final boolean fixed;
+
     /**
      * Creates a shape.
      * @param coords The coordinates of the vertices in the shape.
@@ -45,6 +48,19 @@ public class Shape {
      * @param textureID The index of the texture to use for the shape.
      */
     public Shape(float[] coords, short[] vertices, float[] textureCoords, int textureID) {
+        this(coords, vertices, textureCoords, textureID, false);
+    }
+
+    /**
+     * Creates a shape.
+     * @param coords The coordinates of the vertices in the shape.
+     * @param vertices The triangle indices for the shape.
+     * @param textureCoords The texture coordinates for the shape's texture.
+     * @param textureID The index of the texture to use for the shape.
+     * @param fixed Whether the shape's position is affected by camera movement.
+     */
+    public Shape(float[] coords, short[] vertices, float[] textureCoords, int textureID, boolean fixed) {
+        this.fixed = fixed;
         drawOrder = vertices;
         shapeCoords = coords;
         // 4 bytes per vertex.

@@ -6,6 +6,7 @@ import java.util.Map;
 import io.github.simcards.libcards.graphics.DeckView;
 import io.github.simcards.libcards.graphics.GameScreen;
 import io.github.simcards.libcards.network.DeckUpdater;
+import io.github.simcards.libcards.graphics.HandView;
 import io.github.simcards.libcards.util.GridPosition;
 import io.github.simcards.libcards.util.TouchHandler;
 
@@ -59,6 +60,16 @@ public class Environment {
     }
 
     /**
+     * Adds a hand to the environment.
+     * @param deck The hand to add to the environment.
+     */
+    public void addHand(Deck deck) {
+        decks.put(deck.id, deck);
+        // TODO: Change to a packet.
+        GameScreen.getScreen().addHand(new HandView(deck, deck.playerID));
+    }
+
+    /**
      * Gets a deck by its ID.
      * @param id The ID of the deck.
      * @return The deck with the specified ID.
@@ -93,7 +104,11 @@ public class Environment {
                 selectedCard = card;
             }
         }
-        deck.touch();
+
+        // Test code.
+//        System.out.println(selectedCard.toString());
+//        deck.remove(selectedCard);
+
         if (touchHandler != null && selectedCard != null) {
             touchHandler.handleTouch(playerID, deck, selectedCard);
         }

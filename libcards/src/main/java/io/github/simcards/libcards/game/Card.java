@@ -40,4 +40,9 @@ public class Card implements Serializable {
         this.suit = suit;
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return this.rank.toString() + " of " + this.suit.toString();
+    }
 }

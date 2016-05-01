@@ -42,4 +42,12 @@ public class GraphicsUtil {
 
         return textureHandle[0];
     }
+
+    /**
+     * Gets the width of the screen in world coordinates.
+     * @return The width of the screen in world coordinates.
+     */
+    public static float getWorldScreenWidth() {
+        return (float)GraphicsUtil.screenWidth / GraphicsUtil.screenHeight * 2;
+    }
 }

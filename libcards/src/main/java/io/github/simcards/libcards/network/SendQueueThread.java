@@ -26,7 +26,7 @@ public class SendQueueThread extends Thread {
         return thread;
     }
 
-    private SendQueueThread(ZMQ.Socket[] socks) {
+    public SendQueueThread(ZMQ.Socket[] socks) {
         this.socks = socks;
         this.queue = new LinkedBlockingQueue<>();
         this.keep_going = true;
