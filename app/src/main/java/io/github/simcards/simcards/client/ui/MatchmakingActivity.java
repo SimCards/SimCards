@@ -2,26 +2,16 @@ package io.github.simcards.simcards.client.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.zeromq.ZMQ;
 
 import java.util.Set;
-import java.util.logging.Handler;
 
-import io.github.simcards.libcards.game.AbsolutelyRankedWarGame;
-import io.github.simcards.libcards.game.Game;
-import io.github.simcards.libcards.game.GameInfo;
 import io.github.simcards.libcards.network.MatchmakingClient;
 import io.github.simcards.simcards.R;
 import io.github.simcards.simcards.client.util.MakeToast;

@@ -1,8 +1,14 @@
-package io.github.simcards.libcards.game;
+package io.github.simcards.libcards;
 
 import java.util.List;
 import java.util.Vector;
 
+import io.github.simcards.libcards.game.Card;
+import io.github.simcards.libcards.game.CardGameEvent;
+import io.github.simcards.libcards.game.Deck;
+import io.github.simcards.libcards.game.Environment;
+import io.github.simcards.libcards.game.UserGame;
+import io.github.simcards.libcards.game.Visibility;
 import io.github.simcards.libcards.game.enums.Facing;
 import io.github.simcards.libcards.util.GridPosition;
 import io.github.simcards.libcards.util.Factory;

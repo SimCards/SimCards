@@ -13,6 +13,17 @@ import java.net.UnknownHostException;
 
 public class MatchmakingServer {
     public static void main(String[] args) throws UnknownHostException {
+
+        Runtime.getRuntime().addShutdownHook(new Thread()
+        {
+            @Override
+            public void run()
+            {
+                System.out.println("Terminating ZMQ socket");
+                ZMQ.context(1).term();
+            }
+        });
+
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(4000);

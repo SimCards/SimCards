@@ -10,12 +10,14 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.network.GameReadyMessage;
 import io.github.simcards.libcards.network.MessageType;
 import io.github.simcards.libcards.network.SerializableMsg;
+import io.github.simcards.libcards.util.RandomUtil;
 
 /**
  * Responsible for getting all of the players connected to the game
@@ -42,11 +44,15 @@ public class GameServerConnector {
         this.addrs = new String[numPlayers];
         this.numPlayers = numPlayers;
 
+
+        int beginPort = new Random().nextInt(50000) + 5000;
+        System.out.println("begin port: " + beginPort);
+
         for (int i = 0; i < numPlayers; i++) {
             ZMQ.Socket sock = ctx.socket(ZMQ.PAIR);
             //int port = 6000 + i;
             //sock.bind("tcp://0.0.0.0:" + port);
-            int port = sock.bindToRandomPort("tcp://0.0.0.0");
+            int port = sock.bindToRandomPort("tcp://0.0.0.0", beginPort, beginPort + 1000);
             socks[i] = sock;
             addrs[i] = addr + ":" + port;
         }
@@ -73,6 +79,7 @@ public class GameServerConnector {
 
         Set<Integer> playersConnected = new HashSet<>();
 
+        System.out.println("waiting for " + numPlayers + " to connect");
         while (playersConnected.size() < numPlayers) {
             // poll until one of our sockets has an event
             poller.poll();
@@ -97,6 +104,7 @@ public class GameServerConnector {
                             System.out.println("unhandled msg type: " + msg.type);
                             break;
                     }
+                    System.out.println(playersConnected.size() + " of " + numPlayers + " players connected");
                 }
             }
         }

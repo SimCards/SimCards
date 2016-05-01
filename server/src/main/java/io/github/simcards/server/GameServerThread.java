@@ -4,7 +4,7 @@ import org.zeromq.ZMQ;
 
 import java.net.UnknownHostException;
 
-import io.github.simcards.libcards.game.AbsolutelyRankedWarGame;
+import io.github.simcards.libcards.AbsolutelyRankedWarGame;
 import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.game.GameInfo;
 

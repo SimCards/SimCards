@@ -5,6 +5,8 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.Animator;
 
+import org.zeromq.ZMQ;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ import io.github.simcards.libcards.util.GridPosition;
 public class SimCardsDesktop {
 
     /** Used to display and update the window. */
-    private static Animator animator;
+    public static Animator animator;
     /** The renderer used to display on the screen. */
     public static GLRenderer renderer;
 
@@ -113,5 +115,6 @@ public class SimCardsDesktop {
      */
     public static void exit() {
         animator.stop();
+        ZMQ.context(1).term();
     }
 }
