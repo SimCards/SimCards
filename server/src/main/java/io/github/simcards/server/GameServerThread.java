@@ -4,7 +4,8 @@ import org.zeromq.ZMQ;
 
 import java.net.UnknownHostException;
 
-import io.github.simcards.libcards.AbsolutelyRankedWarGame;
+import io.github.simcards.libcards.customgames.AbsolutelyRankedWarGame;
+import io.github.simcards.libcards.customgames.Blackjack;
 import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.game.GameInfo;
 
@@ -41,6 +42,7 @@ public class GameServerThread extends Thread {
 
     private static Game downloadGame(String gameId) {
         // TODO: actually download the correct game
-        return new Game(new AbsolutelyRankedWarGame(), new GameInfo());
+        //return new Game(new AbsolutelyRankedWarGame(), new GameInfo());
+        return new Game(new Blackjack(), new GameInfo());
     }
 }

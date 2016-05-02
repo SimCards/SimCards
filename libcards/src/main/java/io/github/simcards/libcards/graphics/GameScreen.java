@@ -19,7 +19,7 @@ public class GameScreen {
     private HandView hand;
 
     /** The ID of the client player in the game. */
-    public int playerID;
+    public int playerID = -1;
 
     /** The singleton instance of the screen. */
     private static GameScreen gameScreen = new GameScreen();
@@ -108,5 +108,17 @@ public class GameScreen {
 
     public void setTouchHandler(ClientTouchHandler touchHandler) {
         this.touchHandler = touchHandler;
+    }
+
+    /**
+     * Sets the player's ID and rotates the camera accordingly.
+     * @param id The ID of the player.
+     */
+    public void setPlayerID(int id) {
+        if (playerID == -1) {
+            playerID = id;
+        }
+        int numPlayers = id + 1;
+        GLRenderer.camera.rotation = 360 / numPlayers * playerID;
     }
 }

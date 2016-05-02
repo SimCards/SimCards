@@ -1,4 +1,4 @@
-package io.github.simcards.libcards;
+package io.github.simcards.libcards.customgames;
 
 import java.util.List;
 import java.util.Vector;

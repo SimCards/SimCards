@@ -32,6 +32,9 @@ public class Camera {
     /** The position of the camera in space. */
     public Position position;
 
+    /** The rotation of the camera in degrees. */
+    public float rotation = 0;
+
     /**
      * Sets up a camera at a default position.
      */

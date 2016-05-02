@@ -12,9 +12,11 @@ import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.game.UserGame;
 import io.github.simcards.libcards.graphics.DeckView;
 import io.github.simcards.libcards.graphics.GameScreen;
+import io.github.simcards.libcards.graphics.HandView;
 import io.github.simcards.libcards.util.GridPosition;
 
 /**
+ * Client-side game message handler for SimCards.
  * Created by Vishal on 4/18/16.
  */
 public class GameClient extends Thread {
@@ -34,7 +36,7 @@ public class GameClient extends Thread {
     }
 
     /**
-     * Runs the game loop, updating the game in response to
+     * Runs the game loop, updating the game in response to messages.
      */
     public void run() {
         this.sendQueueThread.start();
@@ -48,18 +50,28 @@ public class GameClient extends Thread {
                     break;
                 case DECK_ADD: {
                     DeckUpdater.DeckAddMsg dam = (DeckUpdater.DeckAddMsg) msg.getContent();
-                    GameScreen.getScreen().addNewDeck(new DeckView(dam.d, dam.p, dam.rotation));
+                    GameScreen screen = GameScreen.getScreen();
+                    if (dam.playerID == -1) {
+                        screen.addNewDeck(new DeckView(dam.d, dam.p, dam.rotation));
+                    } else if (dam.playerID == screen.playerID) {
+                        screen.addHand(new HandView(dam.d, dam.playerID));
+                    }
                     break;
                 }
                 case DECK_REMOVE: {
                     int deckId = msg.getInt();
                     GameScreen.getScreen().removeDeck(deckId);
                     break;
-                } case DECK_UPDATE: {
+                }
+                case DECK_UPDATE: {
                     Deck d = msg.getDeck();
-                    GameScreen.getScreen().getDeck(d.id).replaceDeck(d);
+                    DeckView replace = GameScreen.getScreen().getDeck(d.id);
+                    if (replace != null) {
+                        replace.replaceDeck(d);
+                    }
                     break;
-                } default:
+                }
+                default:
                     System.out.println("Unhandled message type: " + msg.type.toString());
                     break;
             }

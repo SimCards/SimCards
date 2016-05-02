@@ -54,8 +54,6 @@ public class Environment {
      */
     public void addNewDeck(Deck deck, GridPosition gridPosition, float rotation) {
         decks.put(deck.id, deck);
-        // TODO: Change to a packet.
-        // GameScreen.getScreen().addNewDeck(new DeckView(deck, gridPosition, rotation));
         DeckUpdater.addDeck(deck, gridPosition, rotation);
     }
 
@@ -65,8 +63,7 @@ public class Environment {
      */
     public void addHand(Deck deck) {
         decks.put(deck.id, deck);
-        // TODO: Change to a packet.
-        GameScreen.getScreen().addHand(new HandView(deck, deck.playerID));
+        DeckUpdater.addDeck(deck, deck.playerID);
     }
 
     /**
@@ -84,8 +81,6 @@ public class Environment {
      * @return The deck removed from the environment.
      */
     public Deck removeDeck(int id) {
-        // TODO: Change to a packet.
-        // GameScreen.getScreen().removeDeck(id);
         Deck d = decks.remove(id);
         DeckUpdater.removeDeck(id);
         return d;

@@ -177,18 +177,29 @@ public class Deck implements Serializable {
     }
 
     /**
-     * Checks if the deck is empty.
-     * @return Whether the deck is empty.
+     * Processes the deck touch.
      */
-
     public void touch() {
-        // Process the deck touch.
         Card topCard = getTopCard();
         if (topCard != null) {
             System.out.println(topCard.rank.ordinal() + " " + topCard.suit.ordinal());
         }
     }
+
+    /**
+     * Checks if the deck is empty.
+     * @return Whether the deck is empty.
+     */
     public boolean isEmpty() {
         return cards.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Deck)) {
+            return false;
+        }
+        Deck otherDeck = (Deck)other;
+        return otherDeck.id == this.id;
     }
 }

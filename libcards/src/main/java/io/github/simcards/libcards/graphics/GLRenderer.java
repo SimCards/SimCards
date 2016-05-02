@@ -81,6 +81,8 @@ public class GLRenderer {
         Matrix.setLookAtM(viewMatrix, 0, -cameraPosition.x, cameraPosition.y, ZCAMERA,
                 -cameraPosition.x, cameraPosition.y, 0f, 0f, 1.0f, 0.0f);
 
+        Matrix.rotateM(viewMatrix, 0, camera.rotation, 0, 0, 1);
+
         // Calculate the projection and view transformation.
         Matrix.multiplyMM(mvpMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
         Matrix.multiplyMM(fixedMVPMatrix, 0, baseProjectionMatrix, 0, fixedViewMatrix, 0);

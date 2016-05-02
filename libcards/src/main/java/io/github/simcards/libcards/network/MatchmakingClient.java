@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.github.simcards.libcards.graphics.GameScreen;
+
 public class MatchmakingClient extends Thread {
 
     private String host;
@@ -87,6 +89,7 @@ public class MatchmakingClient extends Thread {
                 case CONNECT_UPDATE:
                     System.out.println("Received connect update");
                     Set<Integer> playersConnected = new HashSet<>((ArrayList<Integer>) recvMsg.getContent());
+                    GameScreen.getScreen().setPlayerID(playersConnected.size() - 1);
                     listener.onConnected(playersConnected);
                     break;
                 case GAME_READY:

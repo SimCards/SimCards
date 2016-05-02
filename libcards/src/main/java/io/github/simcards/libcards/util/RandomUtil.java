@@ -9,14 +9,14 @@ import java.util.Random;
 public class RandomUtil {
 
     /** The random number generator to use for generating random numbers. */
-    private static Random sRandom = new Random(System.currentTimeMillis());
+    private static Random random = new Random(System.currentTimeMillis());
 
     /**
      * Sets the random seed used for the random number generation
      * @param seed the random seed used for random number generation
      */
     public static void setSeed(long seed) {
-        sRandom.setSeed(seed);
+        random.setSeed(seed);
     }
 
     /**
@@ -31,7 +31,7 @@ public class RandomUtil {
         } else if (max < min) {
             return getRandomNumberInRange(max, min);
         } else {
-            return sRandom.nextInt() % max + min;
+            return Math.abs(random.nextInt()) % max + min;
         }
     }
 
