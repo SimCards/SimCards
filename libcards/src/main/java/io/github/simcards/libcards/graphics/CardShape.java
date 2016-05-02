@@ -160,8 +160,11 @@ public class CardShape {
         if (shape.fixed) {
             touchPosition.scale(GLRenderer.camera.INITIAL_SCALE / halfScreenHeight);
         } else {
+            touchPosition.rotate(GLRenderer.camera.rotation);
             touchPosition.scale(GLRenderer.camera.scale / halfScreenHeight);
-            touchPosition.addPosition(GLRenderer.camera.position);
+            Position cameraPosition = GLRenderer.camera.position.clone();
+            cameraPosition.rotate(GLRenderer.camera.rotation);
+            touchPosition.addPosition(cameraPosition);
         }
         BoundingBox boundingBox = getBoundingBox();
         return boundingBox.isInside(touchPosition, rotation);

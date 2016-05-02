@@ -50,11 +50,15 @@ public class GameServer extends Thread {
                 nestedCards.add(card);
                 cards.add(nestedCards);
                 CardGameEvent event = new CardGameEvent(player, decks, cards);
-                game.advanceState(event);
+                synchronized (SendQueueThread.messageLock) {
+                    game.advanceState(event);
+                }
             }
         });
 
-        this.game.init(socks.length);
+        synchronized (SendQueueThread.messageLock) {
+            this.game.init(socks.length);
+        }
 
         // init poller
         ZMQ.Poller poller = new ZMQ.Poller(socks.length);

@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 public class SendQueueThread extends Thread {
 
+    /** Lock for environment updating and serializing. */
+    public static Object messageLock = new Object();
 
     private static SendQueueThread thread;
 
@@ -38,9 +40,11 @@ public class SendQueueThread extends Thread {
             try {
                 SerializableMsg msg = queue.poll(500, TimeUnit.MILLISECONDS);
                 if (msg != null) {
-                    System.out.println("Sending out msg of type " + msg.type);
-                    for (int i = 0; i < socks.length; i++) {
-                        socks[i].send(msg.getBytes());
+                    synchronized (messageLock) {
+                        System.out.println("Sending out msg of type " + msg.type);
+                        for (int i = 0; i < socks.length; i++) {
+                            socks[i].send(msg.getBytes());
+                        }
                     }
                 }
             } catch (InterruptedException e) {}

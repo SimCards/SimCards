@@ -9,13 +9,13 @@ import io.github.simcards.libcards.util.Position;
 public class Camera {
 
     /** The minimum value of the camera position's x coordinate. */
-    public float minX = -1;
+    public float minX = -3;
     /** The maximum value of the camera position's x coordinate. */
-    public float maxX = 1;
+    public float maxX = 3;
     /** The minimum value of the camera position's y coordinate. */
-    public float minY = -1;
+    public float minY = -3;
     /** The maximum value of the camera position's y coordinate. */
-    public float maxY = 1;
+    public float maxY = 3;
 
     /** The initial z coordinate of the camera's position when initialized. */
     public static final float INITIAL_SCALE = 1f;

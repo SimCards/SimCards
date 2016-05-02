@@ -6,8 +6,10 @@ import java.net.UnknownHostException;
 
 import io.github.simcards.libcards.customgames.AbsolutelyRankedWarGame;
 import io.github.simcards.libcards.customgames.Blackjack;
+import io.github.simcards.libcards.customgames.CardPickup;
 import io.github.simcards.libcards.game.Game;
 import io.github.simcards.libcards.game.GameInfo;
+import io.github.simcards.libcards.game.UserGame;
 
 public class GameServerThread extends Thread {
 
@@ -42,7 +44,10 @@ public class GameServerThread extends Thread {
 
     private static Game downloadGame(String gameId) {
         // TODO: actually download the correct game
-        //return new Game(new AbsolutelyRankedWarGame(), new GameInfo());
-        return new Game(new Blackjack(), new GameInfo());
+        UserGame game;
+        //game = new AbsolutelyRankedWarGame();
+        //game = new Blackjack();
+        game = new CardPickup();
+        return new Game(game, new GameInfo());
     }
 }
